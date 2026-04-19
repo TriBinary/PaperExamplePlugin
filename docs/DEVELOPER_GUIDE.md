@@ -263,11 +263,11 @@ or a subpackage.
 
 ### PluginGUI Properties
 
-| Property | Type     | Default      | Description                              |
-|:---------|:---------|:-------------|:-----------------------------------------|
-| `id`     | `String` | *(required)* | Unique identifier used to open the GUI   |
+| Property | Type        | Default      | Description                              |
+|:---------|:------------|:-------------|:-----------------------------------------|
+| `id`     | `String`    | *(required)* | Unique identifier used to open the GUI   |
 | `title`  | `Component` | *(required)* | Title displayed at the top of the chest  |
-| `rows`   | `Int`    | `3`          | Number of rows (1–6, each row = 9 slots) |
+| `rows`   | `Int`       | `3`          | Number of rows (1–6, each row = 9 slots) |
 
 ### Methods to Override
 
@@ -375,10 +375,10 @@ For example, a 6-row GUI provides 45 content slots per page (rows 1–5).
 
 ### Methods to Override
 
-| Method           | Required | Description                                                       |
-|:-----------------|:---------|:------------------------------------------------------------------|
-| `getItems`       | Yes      | Return the full list of items to paginate for a player            |
-| `onContentClick` | No       | Handle clicks on content slots (clicks are cancelled by default)  |
+| Method           | Required | Description                                                      |
+|:-----------------|:---------|:-----------------------------------------------------------------|
+| `getItems`       | Yes      | Return the full list of items to paginate for a player           |
+| `onContentClick` | No       | Handle clicks on content slots (clicks are cancelled by default) |
 
 You do **not** need to override `setup`, `onClick`, or `onClose` — `PagedPluginGUI` handles them internally for
 pagination. If you need custom close logic, override `onClose` and call `super.onClose(event)` to ensure page state
@@ -388,11 +388,11 @@ is cleaned up.
 
 The last row of the inventory contains:
 
-| Slot (in last row) | Item    | Description                                  |
-|:-------------------|:--------|:---------------------------------------------|
-| 0                  | Arrow   | **Previous Page** — hidden on the first page |
-| 4                  | Paper   | **Page indicator** — displays "Page X/Y"     |
-| 8                  | Arrow   | **Next Page** — hidden on the last page      |
+| Slot (in last row) | Item  | Description                                  |
+|:-------------------|:------|:---------------------------------------------|
+| 0                  | Arrow | **Previous Page** — hidden on the first page |
+| 4                  | Paper | **Page indicator** — displays "Page X/Y"     |
+| 8                  | Arrow | **Next Page** — hidden on the last page      |
 
 ### Example
 
