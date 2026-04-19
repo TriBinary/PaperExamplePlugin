@@ -1,6 +1,6 @@
 name: ExamplePlugin
 main: com.example.exampleplugin.Main
-version: 0.1.0
+version: ${projectVersion}
 api-version: 1.21
 
 commands:
