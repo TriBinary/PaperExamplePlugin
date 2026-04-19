@@ -1,19 +1,24 @@
 # ExamplePlugin - Developer Guide
 
-This guide explains how to create **commands**, **listeners**, and **GUIs** using ExamplePlugin's registration system. All three follow the same pattern: extend a base class (or implement an interface), place the file in the correct package, and the plugin handles the rest automatically at startup.
+This guide explains how to create **commands**, **listeners**, and **GUIs** using ExamplePlugin's registration system.
+All three follow the same pattern: extend a base class (or implement an interface), place the file in the correct
+package, and the plugin handles the rest automatically at startup.
 
 ## How Auto-Registration Works
 
-ExamplePlugin uses a `PackageScanner` to discover classes at runtime. When the plugin starts, it scans specific packages for concrete (non-abstract) classes and registers them automatically. You never need to edit `plugin.yml` or manually wire anything up.
+ExamplePlugin uses a `PackageScanner` to discover classes at runtime. When the plugin starts, it scans specific packages
+for concrete (non-abstract) classes and registers them automatically. You never need to edit `plugin.yml` or manually
+wire anything up.
 
-| System      | Base Class / Interface | Package                                          |
-|:------------|:-----------------------|:-------------------------------------------------|
-| Commands    | `PluginCommand`        | `com.example.exampleplugin.commands`             |
-| Permissions | *(derived from commands)* | *(automatic — no package needed)*             |
-| Listeners   | `Listener`             | `com.example.exampleplugin.listeners`            |
-| GUIs        | `PluginGUI`            | `com.example.exampleplugin.guis`                 |
+| System      | Base Class / Interface    | Package                               |
+|:------------|:--------------------------|:--------------------------------------|
+| Commands    | `PluginCommand`           | `com.example.exampleplugin.commands`  |
+| Permissions | *(derived from commands)* | *(automatic — no package needed)*     |
+| Listeners   | `Listener`                | `com.example.exampleplugin.listeners` |
+| GUIs        | `PluginGUI`               | `com.example.exampleplugin.guis`      |
 
-Subpackages are also scanned, so you can freely organize classes into folders like `commands/game/`, `listeners/player/`, or `guis/menus/`.
+Subpackages are also scanned, so you can freely organize classes into folders like `commands/game/`,
+`listeners/player/`, or `guis/menus/`.
 
 ## Constructor Requirements
 
@@ -32,52 +37,59 @@ The plugin instance is injected automatically when a `JavaPlugin` constructor is
 
 To create a command, extend `PluginCommand` and place the class anywhere inside the `commands` package or a subpackage.
 
-By default every command is registered as a **sub-command** of `/exampleplugin` (alias `/ep`). For example, a command with `name = "reload"` becomes `/exampleplugin reload`. Set `isMainCommand = true` to register the command as a standalone top-level command instead.
+By default every command is registered as a **sub-command** of `/exampleplugin` (alias `/ep`). For example, a command
+with `name = "reload"` becomes `/exampleplugin reload`. Set `isMainCommand = true` to register the command as a
+standalone top-level command instead.
 
 When a player types `/exampleplugin` in-game, tab-completion automatically lists all available sub-commands.
 
 ### Categories
 
-Commands are automatically categorised based on their **subpackage** (folder) inside the `commands` package. The category is used by the built-in `/exampleplugin help` command to group commands for display.
+Commands are automatically categorised based on their **subpackage** (folder) inside the `commands` package. The
+category is used by the built-in `/exampleplugin help` command to group commands for display.
 
-| Command Location                       | Category    |
-|:---------------------------------------|:------------|
-| `commands/PingCommand.kt`              | General     |
-| `commands/game/StartCommand.kt`        | Game        |
-| `commands/admin/BanCommand.kt`         | Admin       |
+| Command Location                | Category |
+|:--------------------------------|:---------|
+| `commands/PingCommand.kt`       | General  |
+| `commands/game/StartCommand.kt` | Game     |
+| `commands/admin/BanCommand.kt`  | Admin    |
 
 ### Help Command
 
-The plugin ships with a built-in `/exampleplugin help` command. It lists every registered command grouped by category, sorted alphabetically within each group, and formatted with colours for readability. Every command should provide a meaningful `description` so the help output is informative.
+The plugin ships with a built-in `/exampleplugin help` command. It lists every registered command grouped by category,
+sorted alphabetically within each group, and formatted with colours for readability. Every command should provide a
+meaningful `description` so the help output is informative.
 
 ### PluginCommand Properties
 
-| Property        | Type           | Default        | Description                                                                 |
-|:----------------|:---------------|:---------------|:----------------------------------------------------------------------------|
-| `name`          | `String`       | *(required)*   | The command name (e.g. `"reload"` for `/exampleplugin reload`)                    |
-| `description`   | `String`       | `""`           | A brief description shown in `/exampleplugin help` — always provide one           |
-| `usage`         | `String`       | `"/<command>"` | Usage hint shown when the command fails                                     |
-| `aliases`       | `List<String>` | `emptyList()`  | Alternative names for the command (applicable to main commands only)         |
-| `permission`    | `String?`      | `null`         | Permission node required to use the command (auto-registered at startup)    |
-| `isMainCommand` | `Boolean`      | `false`        | When `true`, the command is registered as a standalone top-level command     |
+| Property        | Type           | Default        | Description                                                              |
+|:----------------|:---------------|:---------------|:-------------------------------------------------------------------------|
+| `name`          | `String`       | *(required)*   | The command name (e.g. `"reload"` for `/exampleplugin reload`)           |
+| `description`   | `String`       | `""`           | A brief description shown in `/exampleplugin help` — always provide one  |
+| `usage`         | `String`       | `"/<command>"` | Usage hint shown when the command fails                                  |
+| `aliases`       | `List<String>` | `emptyList()`  | Alternative names for the command (applicable to main commands only)     |
+| `permission`    | `String?`      | `null`         | Permission node required to use the command (auto-registered at startup) |
+| `isMainCommand` | `Boolean`      | `false`        | When `true`, the command is registered as a standalone top-level command |
 
 ### Automatic Permission Registration
 
-When the plugin starts, the `PermissionRegistrar` scans every registered command for a non-null `permission` value and automatically registers it with Bukkit's `PluginManager`. This means:
+When the plugin starts, the `PermissionRegistrar` scans every registered command for a non-null `permission` value and
+automatically registers it with Bukkit's `PluginManager`. This means:
 
 * Permissions are visible to permission-management plugins (e.g. LuckPerms) without manual configuration.
 * Each permission defaults to `PermissionDefault.OP` — only operators have it unless explicitly granted.
 * The command's `description` is used as the permission description.
 * Duplicate permissions (already registered by another source) are detected and skipped.
 
-You do **not** need to declare permissions in `plugin.yml`; simply set the `permission` property on your command and the system handles the rest.
+You do **not** need to declare permissions in `plugin.yml`; simply set the `permission` property on your command and the
+system handles the rest.
 
 ### Methods to Override
 
-| Method        | Required | Description                                       |
-|:--------------|:---------|:--------------------------------------------------|
-| `execute`     | Yes      | Called when a player or console runs the command   |
-| `tabComplete` | No       | Called when tab-completion is requested             |
+| Method        | Required | Description                                      |
+|:--------------|:---------|:-------------------------------------------------|
+| `execute`     | Yes      | Called when a player or console runs the command |
+| `tabComplete` | No       | Called when tab-completion is requested          |
 
 ### Example (Sub-Command)
 
@@ -196,7 +208,8 @@ class GlobalToolCommand : PluginCommand(
 
 ## Listeners
 
-To create a listener, implement Bukkit's `Listener` interface and place the class anywhere inside the `listeners` package or a subpackage.
+To create a listener, implement Bukkit's `Listener` interface and place the class anywhere inside the `listeners`
+package or a subpackage.
 
 ### Methods
 
@@ -245,23 +258,24 @@ class DeathListener(private val plugin: JavaPlugin) : Listener {
 
 ## GUIs
 
-To create a GUI (chest-based inventory menu), extend `PluginGUI` and place the class anywhere inside the `guis` package or a subpackage.
+To create a GUI (chest-based inventory menu), extend `PluginGUI` and place the class anywhere inside the `guis` package
+or a subpackage.
 
 ### PluginGUI Properties
 
-| Property | Type     | Default      | Description                             |
-|:---------|:---------|:-------------|:----------------------------------------|
-| `id`     | `String` | *(required)* | Unique identifier used to open the GUI  |
-| `title`  | `String` | *(required)* | Title displayed at the top of the chest |
-| `rows`   | `Int`    | `3`          | Number of rows (1–6, each row = 9 slots)|
+| Property | Type     | Default      | Description                              |
+|:---------|:---------|:-------------|:-----------------------------------------|
+| `id`     | `String` | *(required)* | Unique identifier used to open the GUI   |
+| `title`  | `String` | *(required)* | Title displayed at the top of the chest  |
+| `rows`   | `Int`    | `3`          | Number of rows (1–6, each row = 9 slots) |
 
 ### Methods to Override
 
-| Method    | Required | Description                                          |
-|:----------|:---------|:-----------------------------------------------------|
-| `setup`   | Yes      | Populate the inventory with items before it opens    |
-| `onClick` | No       | Handle click events (clicks are cancelled by default)|
-| `onClose` | No       | Handle cleanup when the GUI is closed                |
+| Method    | Required | Description                                           |
+|:----------|:---------|:------------------------------------------------------|
+| `setup`   | Yes      | Populate the inventory with items before it opens     |
+| `onClick` | No       | Handle click events (clicks are cancelled by default) |
+| `onClose` | No       | Handle cleanup when the GUI is closed                 |
 
 ### Opening a GUI
 
