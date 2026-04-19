@@ -110,7 +110,7 @@ abstract class PagedPluginGUI(
                 if (page > 0) openPage(player, event.inventory, page - 1)
             }
             navRowStart + NEXT_OFFSET -> {
-                val totalPages = totalPages(player)
+                val totalPages = totalPages(getItems(player).size)
                 if (page < totalPages - 1) openPage(player, event.inventory, page + 1)
             }
             else -> {
@@ -127,11 +127,9 @@ abstract class PagedPluginGUI(
     // ----- Internal helpers ---------------------------------------------------
 
     /**
-     * Calculates the total number of pages for the given player based on
-     * the item count returned by [getItems].
+     * Calculates the total number of pages based on the given [itemCount].
      */
-    private fun totalPages(player: Player): Int {
-        val itemCount = getItems(player).size
+    private fun totalPages(itemCount: Int): Int {
         if (itemCount == 0) return 1
         return (itemCount + contentSlots - 1) / contentSlots
     }
@@ -147,7 +145,7 @@ abstract class PagedPluginGUI(
         inventory.clear()
 
         val items = getItems(player)
-        val totalPages = if (items.isEmpty()) 1 else (items.size + contentSlots - 1) / contentSlots
+        val totalPages = totalPages(items.size)
         val start = page * contentSlots
         val end = minOf(start + contentSlots, items.size)
 
