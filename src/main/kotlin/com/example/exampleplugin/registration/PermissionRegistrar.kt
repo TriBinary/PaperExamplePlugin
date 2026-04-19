@@ -31,7 +31,6 @@ object PermissionRegistrar {
             val permString = info.command.permission ?: continue
 
             if (plugin.server.pluginManager.getPermission(permString) != null) {
-                plugin.logger.info("Permission already registered: $permString")
                 continue
             }
 
