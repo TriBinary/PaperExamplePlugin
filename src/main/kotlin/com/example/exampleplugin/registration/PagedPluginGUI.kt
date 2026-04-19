@@ -153,7 +153,12 @@ abstract class PagedPluginGUI(
             inventory.setItem(i - start, items[i])
         }
 
-        // Navigation row
+        // Navigation row – fill all slots with white stained glass panes first
+        for (offset in 0 until ROW_SIZE) {
+            inventory.setItem(navRowStart + offset, createNavItem(Material.WHITE_STAINED_GLASS_PANE, Component.empty()))
+        }
+
+        // Place navigation items on top of the filler
         if (page > 0) {
             inventory.setItem(navRowStart + PREVIOUS_OFFSET, createNavItem(
                 Material.ARROW,
