@@ -6,11 +6,12 @@ This guide explains how to create **commands**, **listeners**, and **GUIs** usin
 
 ExamplePlugin uses a `PackageScanner` to discover classes at runtime. When the plugin starts, it scans specific packages for concrete (non-abstract) classes and registers them automatically. You never need to edit `plugin.yml` or manually wire anything up.
 
-| System   | Base Class / Interface | Package                                          |
-|:---------|:-----------------------|:-------------------------------------------------|
-| Commands | `PluginCommand`        | `com.example.exampleplugin.commands`             |
-| Listeners| `Listener`             | `com.example.exampleplugin.listeners`            |
-| GUIs     | `PluginGUI`            | `com.example.exampleplugin.guis`                 |
+| System      | Base Class / Interface | Package                                          |
+|:------------|:-----------------------|:-------------------------------------------------|
+| Commands    | `PluginCommand`        | `com.example.exampleplugin.commands`             |
+| Permissions | *(derived from commands)* | *(automatic — no package needed)*             |
+| Listeners   | `Listener`             | `com.example.exampleplugin.listeners`            |
+| GUIs        | `PluginGUI`            | `com.example.exampleplugin.guis`                 |
 
 Subpackages are also scanned, so you can freely organize classes into folders like `commands/game/`, `listeners/player/`, or `guis/menus/`.
 
@@ -57,8 +58,19 @@ The plugin ships with a built-in `/exampleplugin help` command. It lists every r
 | `description`   | `String`       | `""`           | A brief description shown in `/exampleplugin help` — always provide one           |
 | `usage`         | `String`       | `"/<command>"` | Usage hint shown when the command fails                                     |
 | `aliases`       | `List<String>` | `emptyList()`  | Alternative names for the command (applicable to main commands only)         |
-| `permission`    | `String?`      | `null`         | Permission node required to use the command                                 |
+| `permission`    | `String?`      | `null`         | Permission node required to use the command (auto-registered at startup)    |
 | `isMainCommand` | `Boolean`      | `false`        | When `true`, the command is registered as a standalone top-level command     |
+
+### Automatic Permission Registration
+
+When the plugin starts, the `PermissionRegistrar` scans every registered command for a non-null `permission` value and automatically registers it with Bukkit's `PluginManager`. This means:
+
+* Permissions are visible to permission-management plugins (e.g. LuckPerms) without manual configuration.
+* Each permission defaults to `PermissionDefault.OP` — only operators have it unless explicitly granted.
+* The command's `description` is used as the permission description.
+* Duplicate permissions (already registered by another source) are detected and skipped.
+
+You do **not** need to declare permissions in `plugin.yml`; simply set the `permission` property on your command and the system handles the rest.
 
 ### Methods to Override
 

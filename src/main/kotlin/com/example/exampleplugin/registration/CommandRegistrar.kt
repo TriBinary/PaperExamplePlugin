@@ -47,6 +47,11 @@ object CommandRegistrar {
     )
 
     /**
+     * Returns an unmodifiable list of all registered commands and their metadata.
+     */
+    fun getAllCommands(): List<RegisteredCommandInfo> = allCommands.toList()
+
+    /**
      * Returns all registered commands grouped by category. Commands within
      * each category are sorted alphabetically by name; categories themselves
      * are sorted alphabetically as well.
