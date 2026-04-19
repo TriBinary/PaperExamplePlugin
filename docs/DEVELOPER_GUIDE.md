@@ -350,3 +350,107 @@ class SettingsCommand : PluginCommand(
     }
 }
 ```
+
+---
+
+## Paged GUIs
+
+To create a multi-page inventory menu with automatic navigation, extend `PagedPluginGUI` and place the class anywhere
+inside the `guis` package or a subpackage. `PagedPluginGUI` is a subclass of `PluginGUI` that handles page state per
+player and renders **Previous** / **Next** buttons automatically.
+
+The bottom row of the inventory is reserved for navigation controls. Content slots are every slot except the last row.
+For example, a 6-row GUI provides 45 content slots per page (rows 1–5).
+
+### PagedPluginGUI Properties
+
+`PagedPluginGUI` inherits all properties from `PluginGUI`:
+
+| Property | Type        | Default      | Description                              |
+|:---------|:------------|:-------------|:-----------------------------------------|
+| `id`     | `String`    | *(required)* | Unique identifier used to open the GUI   |
+| `title`  | `Component` | *(required)* | Title displayed at the top of the chest  |
+| `rows`   | `Int`       | `6`          | Number of rows (2–6, each row = 9 slots) |
+
+### Methods to Override
+
+| Method           | Required | Description                                                       |
+|:-----------------|:---------|:------------------------------------------------------------------|
+| `getItems`       | Yes      | Return the full list of items to paginate for a player            |
+| `onContentClick` | No       | Handle clicks on content slots (clicks are cancelled by default)  |
+
+You do **not** need to override `setup`, `onClick`, or `onClose` — `PagedPluginGUI` handles them internally for
+pagination. If you need custom close logic, override `onClose` and call `super.onClose(event)` to ensure page state
+is cleaned up.
+
+### Navigation Layout
+
+The last row of the inventory contains:
+
+| Slot (in last row) | Item    | Description                                  |
+|:-------------------|:--------|:---------------------------------------------|
+| 0                  | Arrow   | **Previous Page** — hidden on the first page |
+| 4                  | Paper   | **Page indicator** — displays "Page X/Y"     |
+| 8                  | Arrow   | **Next Page** — hidden on the last page      |
+
+### Example
+
+```kotlin
+package com.example.exampleplugin.guis
+
+import com.example.exampleplugin.registration.PagedPluginGUI
+import net.kyori.adventure.text.Component
+import org.bukkit.Material
+import org.bukkit.entity.Player
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.inventory.ItemStack
+
+class RewardsGUI : PagedPluginGUI(
+    id = "rewards",
+    title = Component.text("Rewards"),
+    rows = 6
+) {
+    override fun getItems(player: Player): List<ItemStack> {
+        return List(100) { index ->
+            val item = ItemStack(Material.DIAMOND)
+            val meta = item.itemMeta
+            meta.displayName(Component.text("Reward #${index + 1}"))
+            item.itemMeta = meta
+            item
+        }
+    }
+
+    override fun onContentClick(event: InventoryClickEvent, page: Int) {
+        val player = event.whoClicked as? Player ?: return
+        player.sendMessage("You clicked slot ${event.slot} on page ${page + 1}!")
+    }
+}
+```
+
+### Opening a Paged GUI from a Command
+
+Paged GUIs are opened the same way as regular GUIs, using `GUIManager.open(player, id)`:
+
+```kotlin
+package com.example.exampleplugin.commands
+
+import com.example.exampleplugin.registration.GUIManager
+import com.example.exampleplugin.registration.PluginCommand
+import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
+
+class RewardsCommand : PluginCommand(
+    name = "rewards",
+    description = "Browse available rewards",
+    permission = "exampleplugin.rewards"
+) {
+    override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        if (sender !is Player) {
+            sender.sendMessage("This command can only be used by players.")
+            return true
+        }
+        GUIManager.open(sender, "rewards")
+        return true
+    }
+}
+```
