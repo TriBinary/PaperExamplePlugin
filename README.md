@@ -2,7 +2,7 @@
   PaperExamplePlugin
 </h1>
 
-A template repository for creating Paper (Minecraft) plugins with Kotlin. It comes with an auto-registration system for commands, listeners, and GUIs — just extend a base class, drop it in the right package, and the plugin handles the rest.
+A template repository for creating Paper (Minecraft) plugins with Kotlin. It comes with an auto-registration system for commands, listeners, permissions, and GUIs — just extend a base class, drop it in the right package, and the plugin handles the rest.
 
 ## Getting Started
 
