@@ -27,7 +27,7 @@ import org.bukkit.inventory.Inventory
  *
  * class SettingsGUI : PluginGUI(
  *     id = "settings",
- *     title = "Settings",
+ *     title = Component.text("Settings"),
  *     rows = 3
  * ) {
  *     override fun setup(player: Player, inventory: Inventory) {

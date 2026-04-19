@@ -266,7 +266,7 @@ or a subpackage.
 | Property | Type     | Default      | Description                              |
 |:---------|:---------|:-------------|:-----------------------------------------|
 | `id`     | `String` | *(required)* | Unique identifier used to open the GUI   |
-| `title`  | `String` | *(required)* | Title displayed at the top of the chest  |
+| `title`  | `Component` | *(required)* | Title displayed at the top of the chest  |
 | `rows`   | `Int`    | `3`          | Number of rows (1–6, each row = 9 slots) |
 
 ### Methods to Override
@@ -294,6 +294,7 @@ GUIManager.open(player, "settings")
 package com.example.exampleplugin.guis
 
 import com.example.exampleplugin.registration.PluginGUI
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -302,13 +303,13 @@ import org.bukkit.inventory.ItemStack
 
 class SettingsGUI : PluginGUI(
     id = "settings",
-    title = "Settings",
+    title = Component.text("Settings"),
     rows = 3
 ) {
     override fun setup(player: Player, inventory: Inventory) {
         val compass = ItemStack(Material.COMPASS)
         val meta = compass.itemMeta
-        meta.displayName(net.kyori.adventure.text.Component.text("Tracker"))
+        meta.displayName(Component.text("Tracker"))
         compass.itemMeta = meta
         inventory.setItem(13, compass)
     }
