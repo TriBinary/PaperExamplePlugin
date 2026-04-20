@@ -28,11 +28,13 @@ handles the rest.
 src/main/kotlin/com/example/exampleplugin/
 ├── Main.kt                  # Plugin entry point
 ├── commands/                # Auto-registered commands (extend PluginCommand)
-├── listeners/               # Auto-registered listeners (implement Listener)
+├── config/                  # Typed configuration wrapper (PluginConfig)
 ├── guis/                    # Auto-registered GUIs (extend PluginGUI)
-└── registration/            # Auto-registration framework
+├── listeners/               # Auto-registered listeners (implement Listener)
+├── registration/            # Auto-registration framework
+└── utils/                   # Utility helpers (e.g. ItemStack DSL)
 ```
 
-See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) for detailed instructions on creating commands, listeners, and
-GUIs.
+See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) for detailed instructions on creating commands, listeners,
+GUIs, and working with the configuration system.
 
