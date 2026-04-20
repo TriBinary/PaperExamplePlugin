@@ -455,3 +455,75 @@ class RewardsCommand : PluginCommand(
     }
 }
 ```
+
+---
+
+## ItemStack Builder DSL
+
+Building `ItemStack` instances with custom names, lore, enchantments, and flags normally requires verbose
+boilerplate. The `itemStack` DSL in `com.example.exampleplugin.utils` lets you create fully configured items in a
+single expression. All text is parsed through
+[MiniMessage](https://docs.advntr.dev/minimessage/index.html), so rich formatting tags like `<bold>`, `<red>`,
+and `<gradient>` work out of the box.
+
+### Before (vanilla API)
+
+```kotlin
+val item = ItemStack(Material.DIAMOND_SWORD)
+val meta = item.itemMeta
+meta.displayName(MiniMessage.miniMessage().deserialize("<bold><gradient:gold:yellow>Excalibur</gradient></bold>"))
+meta.lore(listOf(
+    MiniMessage.miniMessage().deserialize("<gray>A legendary blade"),
+    MiniMessage.miniMessage().deserialize("<gray>Damage: <red>+20")
+))
+meta.addEnchant(Enchantment.SHARPNESS, 5, true)
+meta.isUnbreakable = true
+meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
+item.itemMeta = meta
+```
+
+### After (using the DSL)
+
+```kotlin
+import com.example.exampleplugin.utils.itemStack
+
+val item = itemStack(Material.DIAMOND_SWORD) {
+    name("<bold><gradient:gold:yellow>Excalibur</gradient></bold>")
+    lore("<gray>A legendary blade", "<gray>Damage: <red>+20")
+    enchant(Enchantment.SHARPNESS, 5)
+    unbreakable(true)
+    flag(ItemFlag.HIDE_ENCHANTS)
+}
+```
+
+### Builder Methods
+
+| Method            | Signature                          | Description                                          |
+|:------------------|:-----------------------------------|:-----------------------------------------------------|
+| `name`            | `name(String)`                     | Set the display name (MiniMessage)                   |
+| `lore`            | `lore(vararg String)`              | Set lore lines (each parsed with MiniMessage)        |
+| `enchant`         | `enchant(Enchantment, Int)`        | Add an enchantment at the given level                |
+| `unbreakable`     | `unbreakable(Boolean)`             | Make the item unbreakable                            |
+| `amount`          | `amount(Int)`                      | Set the stack size                                   |
+| `flag`            | `flag(vararg ItemFlag)`            | Add one or more item flags                           |
+| `customModelData` | `customModelData(Int)`             | Set the custom model data value                      |
+| `meta`            | `meta(ItemMeta.() -> Unit)`        | Escape hatch for direct `ItemMeta` manipulation      |
+
+### Escape Hatch Example
+
+For advanced use-cases not covered by the builder methods, the `meta` block gives you direct access to the
+`ItemMeta`. Any changes made inside `meta` are applied **after** all other builder properties, so they take
+precedence:
+
+```kotlin
+import com.example.exampleplugin.utils.itemStack
+
+val head = itemStack(Material.PLAYER_HEAD) {
+    name("<yellow>Custom Head")
+    meta {
+        // 'this' is the ItemMeta — cast and use any Paper API method
+        (this as org.bukkit.inventory.meta.SkullMeta)
+            .owningPlayer = org.bukkit.Bukkit.getOfflinePlayer("Notch")
+    }
+}
+```
