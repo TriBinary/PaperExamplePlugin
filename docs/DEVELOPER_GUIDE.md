@@ -479,10 +479,12 @@ and `<gradient>` work out of the box.
 val item = ItemStack(Material.DIAMOND_SWORD)
 val meta = item.itemMeta
 meta.displayName(MiniMessage.miniMessage().deserialize("<bold><gradient:gold:yellow>Excalibur</gradient></bold>"))
-meta.lore(listOf(
-    MiniMessage.miniMessage().deserialize("<gray>A legendary blade"),
-    MiniMessage.miniMessage().deserialize("<gray>Damage: <red>+20")
-))
+meta.lore(
+    listOf(
+        MiniMessage.miniMessage().deserialize("<gray>A legendary blade"),
+        MiniMessage.miniMessage().deserialize("<gray>Damage: <red>+20")
+    )
+)
 meta.addEnchant(Enchantment.SHARPNESS, 5, true)
 meta.isUnbreakable = true
 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
@@ -505,16 +507,16 @@ val item = itemStack(Material.DIAMOND_SWORD) {
 
 ### Builder Methods
 
-| Method            | Signature                          | Description                                          |
-|:------------------|:-----------------------------------|:-----------------------------------------------------|
-| `name`            | `name(String)`                     | Set the display name (MiniMessage)                   |
-| `lore`            | `lore(vararg String)`              | Set lore lines (each parsed with MiniMessage)        |
-| `enchant`         | `enchant(Enchantment, Int)`        | Add an enchantment at the given level                |
-| `unbreakable`     | `unbreakable(Boolean)`             | Make the item unbreakable                            |
-| `amount`          | `amount(Int)`                      | Set the stack size                                   |
-| `flag`            | `flag(vararg ItemFlag)`            | Add one or more item flags                           |
-| `customModelData` | `customModelData(Int)`             | Set the custom model data value                      |
-| `meta`            | `meta(ItemMeta.() -> Unit)`        | Escape hatch for direct `ItemMeta` manipulation      |
+| Method            | Signature                   | Description                                     |
+|:------------------|:----------------------------|:------------------------------------------------|
+| `name`            | `name(String)`              | Set the display name (MiniMessage)              |
+| `lore`            | `lore(vararg String)`       | Set lore lines (each parsed with MiniMessage)   |
+| `enchant`         | `enchant(Enchantment, Int)` | Add an enchantment at the given level           |
+| `unbreakable`     | `unbreakable(Boolean)`      | Make the item unbreakable                       |
+| `amount`          | `amount(Int)`               | Set the stack size                              |
+| `flag`            | `flag(vararg ItemFlag)`     | Add one or more item flags                      |
+| `customModelData` | `customModelData(Int)`      | Set the custom model data value                 |
+| `meta`            | `meta(ItemMeta.() -> Unit)` | Escape hatch for direct `ItemMeta` manipulation |
 
 ### Escape Hatch Example
 
@@ -581,14 +583,14 @@ message-prefix: "[ExamplePlugin]"
 `PluginConfig` provides the following typed getter methods. Each method accepts a YAML path and a default value that
 is returned when the key is absent or has the wrong type:
 
-| Method          | Signature                                  | Description                                         |
-|:----------------|:-------------------------------------------|:----------------------------------------------------|
-| `getString`     | `getString(path, default = "")`            | Returns a `String` value                            |
-| `getInt`        | `getInt(path, default = 0)`                | Returns an `Int` value                              |
-| `getDouble`     | `getDouble(path, default = 0.0)`           | Returns a `Double` value                            |
-| `getBoolean`    | `getBoolean(path, default = false)`        | Returns a `Boolean` value                           |
-| `getStringList` | `getStringList(path)`                      | Returns a `List<String>` (empty list if absent)     |
-| `contains`      | `contains(path)`                           | Returns `true` when the path exists in the config   |
+| Method          | Signature                           | Description                                       |
+|:----------------|:------------------------------------|:--------------------------------------------------|
+| `getString`     | `getString(path, default = "")`     | Returns a `String` value                          |
+| `getInt`        | `getInt(path, default = 0)`         | Returns an `Int` value                            |
+| `getDouble`     | `getDouble(path, default = 0.0)`    | Returns a `Double` value                          |
+| `getBoolean`    | `getBoolean(path, default = false)` | Returns a `Boolean` value                         |
+| `getStringList` | `getStringList(path)`               | Returns a `List<String>` (empty list if absent)   |
+| `contains`      | `contains(path)`                    | Returns `true` when the path exists in the config |
 
 ### Reloading
 
