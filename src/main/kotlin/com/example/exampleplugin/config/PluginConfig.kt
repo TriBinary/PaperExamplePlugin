@@ -29,32 +29,9 @@ class PluginConfig(private val plugin: JavaPlugin) {
      */
     fun reload() {
         plugin.reloadConfig()
+        plugin.config.options().copyDefaults(true)
+        plugin.saveConfig()
         config = plugin.config
-    }
-
-    /**
-     * Adds any keys present in the default `config.yml` (bundled inside the
-     * plugin JAR) that are missing from the server's active configuration
-     * file, while preserving all user-modified values.
-     *
-     * Call this after [reload] to ensure the on-disk config stays up-to-date
-     * with newly introduced defaults.
-     */
-    fun migrate() {
-        val defaultStream = plugin.getResource("config.yml") ?: return
-        val defaultConfig = defaultStream.use { YamlConfiguration.loadConfiguration(it.reader()) }
-
-        var changed = false
-        for (key in defaultConfig.getKeys(true)) {
-            if (!defaultConfig.isConfigurationSection(key) && !config.contains(key)) {
-                config.set(key, defaultConfig.get(key))
-                changed = true
-            }
-        }
-
-        if (changed) {
-            plugin.saveConfig()
-        }
     }
 
     // ── Typed Getters ───────────────────────────────────────────────────

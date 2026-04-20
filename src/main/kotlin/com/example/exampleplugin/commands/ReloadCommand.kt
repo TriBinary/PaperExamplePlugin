@@ -22,7 +22,6 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
             return true
         }
         main.pluginConfig.reload()
-        main.pluginConfig.migrate()
         sender.sendMessage("Configuration reloaded!")
         return true
     }
