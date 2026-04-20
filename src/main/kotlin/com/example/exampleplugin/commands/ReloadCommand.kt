@@ -18,7 +18,7 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
     override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
         val main = plugin as? com.example.exampleplugin.Main
         if (main == null) {
-            sender.sendMessage("Unable to reload configuration.")
+            sender.sendMessage("Error: Plugin instance type mismatch. Unable to reload configuration.")
             return true
         }
         main.pluginConfig.reload()
