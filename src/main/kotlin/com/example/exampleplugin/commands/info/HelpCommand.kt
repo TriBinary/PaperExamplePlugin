@@ -1,11 +1,12 @@
-package com.example.exampleplugin.commands
+package com.example.exampleplugin.commands.info
 
+import com.example.exampleplugin.registration.CommandRegistrar
+import com.example.exampleplugin.registration.PluginCommand
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
-import com.example.exampleplugin.registration.CommandRegistrar
-import com.example.exampleplugin.registration.PluginCommand
 import org.bukkit.command.CommandSender
+import kotlin.collections.iterator
 
 class HelpCommand : PluginCommand(
     name = "help",
