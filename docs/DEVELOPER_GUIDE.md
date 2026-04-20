@@ -1,8 +1,9 @@
 # ExamplePlugin - Developer Guide
 
-This guide explains how to create **commands**, **listeners**, and **GUIs** using ExamplePlugin's registration system.
-All three follow the same pattern: extend a base class (or implement an interface), place the file in the correct
-package, and the plugin handles the rest automatically at startup.
+This guide explains how to create **commands**, **listeners**, **GUIs**, and work with the **configuration** system
+using ExamplePlugin's registration system. Commands, listeners, and GUIs all follow the same pattern: extend a base
+class (or implement an interface), place the file in the correct package, and the plugin handles the rest
+automatically at startup. The configuration system provides typed access to `config.yml` values.
 
 ## How Auto-Registration Works
 
@@ -10,12 +11,13 @@ ExamplePlugin uses a `PackageScanner` to discover classes at runtime. When the p
 for concrete (non-abstract) classes and registers them automatically. You never need to edit `plugin.yml` or manually
 wire anything up.
 
-| System      | Base Class / Interface    | Package                               |
-|:------------|:--------------------------|:--------------------------------------|
-| Commands    | `PluginCommand`           | `com.example.exampleplugin.commands`  |
-| Permissions | *(derived from commands)* | *(automatic — no package needed)*     |
-| Listeners   | `Listener`                | `com.example.exampleplugin.listeners` |
-| GUIs        | `PluginGUI`               | `com.example.exampleplugin.guis`      |
+| System        | Base Class / Interface    | Package                               |
+|:--------------|:--------------------------|:--------------------------------------|
+| Commands      | `PluginCommand`           | `com.example.exampleplugin.commands`  |
+| Permissions   | *(derived from commands)* | *(automatic — no package needed)*     |
+| Listeners     | `Listener`                | `com.example.exampleplugin.listeners` |
+| GUIs          | `PluginGUI`               | `com.example.exampleplugin.guis`      |
+| Configuration | `PluginConfig`            | `com.example.exampleplugin.config`    |
 
 Subpackages are also scanned, so you can freely organize classes into folders like `commands/game/`,
 `listeners/player/`, or `guis/menus/`.
@@ -524,6 +526,122 @@ val head = itemStack(Material.PLAYER_HEAD) {
         // 'this' is the ItemMeta — cast and use any Paper API method
         (this as org.bukkit.inventory.meta.SkullMeta)
             .owningPlayer = org.bukkit.Bukkit.getOfflinePlayer("Notch")
+    }
+}
+```
+
+---
+
+## Configuration
+
+ExamplePlugin provides a typed configuration wrapper — `PluginConfig` — around the standard Bukkit `config.yml`. It
+lives in the `com.example.exampleplugin.config` package and is created automatically when the plugin starts.
+
+### How It Works
+
+1. On first run, the default `config.yml` bundled inside the JAR (`src/main/resources/config.yml`) is copied to the
+   plugin's data folder.
+2. `PluginConfig` loads the YAML values into memory and exposes them through typed getter methods.
+3. At any time you can call `reload()` to re-read the file from disk, picking up changes made while the server is
+   running.
+
+The plugin's `Main` class exposes the instance as `pluginConfig`:
+
+```kotlin
+class Main : JavaPlugin() {
+    lateinit var pluginConfig: PluginConfig
+        private set
+
+    override fun onEnable() {
+        pluginConfig = PluginConfig(this)
+        // ...
+    }
+}
+```
+
+### Default config.yml
+
+Place default values in `src/main/resources/config.yml`. They are copied to the server's plugin data folder on first
+run:
+
+```yaml
+# ExamplePlugin Configuration
+
+# A friendly prefix shown before plugin messages
+message-prefix: "[ExamplePlugin]"
+```
+
+### Typed Getters
+
+`PluginConfig` provides the following typed getter methods. Each method accepts a YAML path and a default value that
+is returned when the key is absent or has the wrong type:
+
+| Method          | Signature                                  | Description                                         |
+|:----------------|:-------------------------------------------|:----------------------------------------------------|
+| `getString`     | `getString(path, default = "")`            | Returns a `String` value                            |
+| `getInt`        | `getInt(path, default = 0)`                | Returns an `Int` value                              |
+| `getDouble`     | `getDouble(path, default = 0.0)`           | Returns a `Double` value                            |
+| `getBoolean`    | `getBoolean(path, default = false)`        | Returns a `Boolean` value                           |
+| `getStringList` | `getStringList(path)`                      | Returns a `List<String>` (empty list if absent)     |
+| `contains`      | `contains(path)`                           | Returns `true` when the path exists in the config   |
+
+### Reloading
+
+Call `reload()` to re-read `config.yml` from disk without restarting the server. The method copies any new default
+keys into the file, saves it, and refreshes the in-memory values:
+
+```kotlin
+pluginConfig.reload()
+```
+
+The built-in `/exampleplugin reload` command already calls this method.
+
+### Accessing the Config from a Command
+
+Cast the injected `JavaPlugin` to `Main` to reach `pluginConfig`:
+
+```kotlin
+package com.example.exampleplugin.commands
+
+import com.example.exampleplugin.Main
+import com.example.exampleplugin.registration.PluginCommand
+import org.bukkit.command.CommandSender
+import org.bukkit.plugin.java.JavaPlugin
+
+class PrefixCommand(private val plugin: JavaPlugin) : PluginCommand(
+    name = "prefix",
+    description = "Show the configured message prefix",
+    permission = "exampleplugin.prefix"
+) {
+    override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        val main = plugin as? Main ?: return true
+        val prefix = main.pluginConfig.getString("message-prefix", "[ExamplePlugin]")
+        sender.sendMessage("Current prefix: $prefix")
+        return true
+    }
+}
+```
+
+### Accessing the Config from a Listener
+
+The same pattern works for listeners — accept a `JavaPlugin` constructor parameter and cast to `Main`:
+
+```kotlin
+package com.example.exampleplugin.listeners
+
+import com.example.exampleplugin.Main
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.plugin.java.JavaPlugin
+
+class WelcomeListener(private val plugin: JavaPlugin) : Listener {
+
+    @EventHandler
+    fun onPlayerJoin(event: PlayerJoinEvent) {
+        val main = plugin as? Main ?: return
+        val prefix = main.pluginConfig.getString("message-prefix", "[ExamplePlugin]")
+        event.player.sendMessage("$prefix Welcome, ${event.player.name}!")
     }
 }
 ```
