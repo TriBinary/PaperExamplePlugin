@@ -1,0 +1,10 @@
+# ExamplePlugin Configuration
+
+# A friendly prefix shown before plugin messages
+message-prefix: "[ExamplePlugin]"
+
+# Whether to enable debug logging
+debug: false
+
+# Maximum number of items per page in paged GUIs
+items-per-page: 45
