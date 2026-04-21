@@ -29,6 +29,7 @@ src/main/kotlin/com/example/exampleplugin/
 ├── Main.kt                  # Plugin entry point
 ├── commands/                # Auto-registered commands (extend PluginCommand)
 ├── config/                  # Typed configuration wrapper (PluginConfig)
+├── data/                    # JSON-persisted player and server data (PlayerData, ServerData)
 ├── guis/                    # Auto-registered GUIs (extend PluginGUI)
 ├── listeners/               # Auto-registered listeners (implement Listener)
 ├── registration/            # Auto-registration framework
@@ -36,5 +37,5 @@ src/main/kotlin/com/example/exampleplugin/
 ```
 
 See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) for detailed instructions on creating commands, listeners,
-GUIs, and working with the configuration system.
+GUIs, working with the configuration system, and managing player and server data.
 
