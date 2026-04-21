@@ -38,6 +38,7 @@ import java.util.UUID
  *     id = "rewards",
  *     title = Component.text("Rewards"),
  *     rows = 6
+ *     fillMode: FillMode = FillMode.NONE
  * ) {
  *     override fun getItems(player: Player): List<ItemStack> {
  *         return List(100) { index ->
@@ -54,8 +55,9 @@ import java.util.UUID
 abstract class PagedPluginGUI(
     id: String,
     title: Component,
-    rows: Int = 6
-) : PluginGUI(id, title, rows) {
+    rows: Int = 6,
+    fillMode: FillMode = FillMode.NONE
+) : PluginGUI(id, title, rows, fillMode) {
 
     /** Tracks the current page for each player viewing this GUI. */
     private val playerPages = mutableMapOf<UUID, Int>()
