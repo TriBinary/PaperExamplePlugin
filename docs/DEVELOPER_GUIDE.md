@@ -504,15 +504,15 @@ val bold = Component.text("Hello, world!", NamedTextColor.GOLD, TextDecoration.B
 
 #### Additional Component Factory Methods
 
-| Factory                              | Description                                                              |
-|:-------------------------------------|:-------------------------------------------------------------------------|
-| `Component.empty()`                  | A component with no content — useful as a neutral base to `.append()` to |
-| `Component.newline()`                | A line-break component                                                    |
-| `Component.space()`                  | A single space                                                            |
-| `Component.text(String)`             | Plain text component                                                      |
-| `Component.translatable(String)`     | A Minecraft translation key (e.g. `"block.minecraft.dirt"`)              |
-| `Component.keybind(String)`          | Displays the key bound to an action (e.g. `"key.jump"`)                  |
-| `Component.join(separator, parts)`   | Joins a list of components with a separator between each one             |
+| Factory                            | Description                                                              |
+|:-----------------------------------|:-------------------------------------------------------------------------|
+| `Component.empty()`                | A component with no content — useful as a neutral base to `.append()` to |
+| `Component.newline()`              | A line-break component                                                   |
+| `Component.space()`                | A single space                                                           |
+| `Component.text(String)`           | Plain text component                                                     |
+| `Component.translatable(String)`   | A Minecraft translation key (e.g. `"block.minecraft.dirt"`)              |
+| `Component.keybind(String)`        | Displays the key bound to an action (e.g. `"key.jump"`)                  |
+| `Component.join(separator, parts)` | Joins a list of components with a separator between each one             |
 
 ##### `Component.translatable` Example
 
@@ -562,24 +562,24 @@ sender.sendMessage(list)
 
 `NamedTextColor` exposes the 16 standard Minecraft colours as constants:
 
-| Constant        | In-game appearance |
-|:----------------|:-------------------|
-| `BLACK`         | Black              |
-| `DARK_BLUE`     | Dark Blue          |
-| `DARK_GREEN`    | Dark Green         |
-| `DARK_AQUA`     | Dark Aqua          |
-| `DARK_RED`      | Dark Red           |
-| `DARK_PURPLE`   | Dark Purple        |
-| `GOLD`          | Gold               |
-| `GRAY`          | Gray               |
-| `DARK_GRAY`     | Dark Gray          |
-| `BLUE`          | Blue               |
-| `GREEN`         | Green              |
-| `AQUA`          | Aqua               |
-| `RED`           | Red                |
-| `LIGHT_PURPLE`  | Light Purple       |
-| `YELLOW`        | Yellow             |
-| `WHITE`         | White              |
+| Constant       | In-game appearance |
+|:---------------|:-------------------|
+| `BLACK`        | Black              |
+| `DARK_BLUE`    | Dark Blue          |
+| `DARK_GREEN`   | Dark Green         |
+| `DARK_AQUA`    | Dark Aqua          |
+| `DARK_RED`     | Dark Red           |
+| `DARK_PURPLE`  | Dark Purple        |
+| `GOLD`         | Gold               |
+| `GRAY`         | Gray               |
+| `DARK_GRAY`    | Dark Gray          |
+| `BLUE`         | Blue               |
+| `GREEN`        | Green              |
+| `AQUA`         | Aqua               |
+| `RED`          | Red                |
+| `LIGHT_PURPLE` | Light Purple       |
+| `YELLOW`       | Yellow             |
+| `WHITE`        | White              |
 
 #### TextColor (Hex / RGB)
 
@@ -725,13 +725,13 @@ sender.sendMessage(runCmd)
 
 #### ClickEvent Actions
 
-| Factory method                        | Effect                                          |
-|:--------------------------------------|:------------------------------------------------|
-| `ClickEvent.runCommand(String)`       | Executes the command as the player              |
-| `ClickEvent.suggestCommand(String)`   | Places the string in the player's chat bar      |
-| `ClickEvent.openUrl(String)`          | Opens a URL in the player's default browser     |
-| `ClickEvent.copyToClipboard(String)`  | Copies the string to the player's clipboard     |
-| `ClickEvent.changePage(Int)`          | Changes the page of an open book                |
+| Factory method                       | Effect                                      |
+|:-------------------------------------|:--------------------------------------------|
+| `ClickEvent.runCommand(String)`      | Executes the command as the player          |
+| `ClickEvent.suggestCommand(String)`  | Places the string in the player's chat bar  |
+| `ClickEvent.openUrl(String)`         | Opens a URL in the player's default browser |
+| `ClickEvent.copyToClipboard(String)` | Copies the string to the player's clipboard |
+| `ClickEvent.changePage(Int)`         | Changes the page of an open book            |
 
 ### HoverEvent
 
@@ -741,17 +741,18 @@ A `HoverEvent` displays a tooltip when the player hovers over the component. Att
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
-
-// Show a text tooltip
-val withHover = Component.text("Hover over me!", NamedTextColor.GREEN)
-    .hoverEvent(HoverEvent.showText(
-        Component.text("This is a tooltip!", NamedTextColor.GRAY)
-    ))
-
-// Show an item tooltip (displays the item's name, lore, and stats)
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 
+// Show a text tooltip
+val withHover = Component.text("Hover over me!", NamedTextColor.GREEN)
+    .hoverEvent(
+        HoverEvent.showText(
+            Component.text("This is a tooltip!", NamedTextColor.GRAY)
+        )
+    )
+
+// Show an item tooltip (displays the item's name, lore, and stats)
 val diamond = ItemStack(Material.DIAMOND)
 val withItemHover = Component.text("A diamond", NamedTextColor.AQUA)
     .hoverEvent(diamond.asHoverEvent())
@@ -761,11 +762,11 @@ sender.sendMessage(withHover)
 
 #### HoverEvent Actions
 
-| Factory method                           | Effect                                       |
-|:-----------------------------------------|:---------------------------------------------|
-| `HoverEvent.showText(Component)`         | Shows a rich-text tooltip                    |
-| `ItemStack.asHoverEvent()`               | Shows the item's name, lore, and stats       |
-| `Entity.asHoverEvent()`                  | Shows the entity's name and UUID             |
+| Factory method                   | Effect                                 |
+|:---------------------------------|:---------------------------------------|
+| `HoverEvent.showText(Component)` | Shows a rich-text tooltip              |
+| `ItemStack.asHoverEvent()`       | Shows the item's name, lore, and stats |
+| `Entity.asHoverEvent()`          | Shows the entity's name and UUID       |
 
 ### MiniMessage
 
@@ -810,26 +811,26 @@ player.sendMessage(message)
 
 #### Common MiniMessage Tags
 
-| Tag                                | Effect                                            |
-|:-----------------------------------|:--------------------------------------------------|
-| `<color_name>` / `<red>`           | Named colour (same names as `NamedTextColor`)     |
-| `<#RRGGBB>`                        | Hex colour                                        |
-| `<bold>`, `<b>`                    | Bold                                              |
-| `<italic>`, `<i>`                  | Italic                                            |
-| `<underlined>`, `<u>`              | Underline                                         |
-| `<strikethrough>`, `<st>`          | Strikethrough                                     |
-| `<obfuscated>`, `<obf>`            | Obfuscated                                        |
-| `<gradient:color1:color2>`         | Smooth gradient between two or more colours       |
-| `<rainbow>`                        | Full rainbow gradient across the text             |
-| `<reset>`                          | Reset all active styles                           |
-| `<newline>` / `<br>`               | Line break                                        |
-| `<click:run_command:/cmd>`         | Clickable text that runs a command                |
-| `<click:suggest_command:/cmd>`     | Clickable text that fills the chat bar            |
-| `<click:open_url:https://...>`     | Clickable text that opens a URL                   |
-| `<click:copy_to_clipboard:text>`   | Clickable text that copies to clipboard           |
-| `<hover:show_text:'tooltip'>`      | Text shown when the cursor hovers over the line   |
-| `<keybind:key.jump>`               | Renders the player's bound key for an action      |
-| `<lang:block.minecraft.dirt>`      | Renders a Minecraft translation key               |
+| Tag                              | Effect                                          |
+|:---------------------------------|:------------------------------------------------|
+| `<color_name>` / `<red>`         | Named colour (same names as `NamedTextColor`)   |
+| `<#RRGGBB>`                      | Hex colour                                      |
+| `<bold>`, `<b>`                  | Bold                                            |
+| `<italic>`, `<i>`                | Italic                                          |
+| `<underlined>`, `<u>`            | Underline                                       |
+| `<strikethrough>`, `<st>`        | Strikethrough                                   |
+| `<obfuscated>`, `<obf>`          | Obfuscated                                      |
+| `<gradient:color1:color2>`       | Smooth gradient between two or more colours     |
+| `<rainbow>`                      | Full rainbow gradient across the text           |
+| `<reset>`                        | Reset all active styles                         |
+| `<newline>` / `<br>`             | Line break                                      |
+| `<click:run_command:/cmd>`       | Clickable text that runs a command              |
+| `<click:suggest_command:/cmd>`   | Clickable text that fills the chat bar          |
+| `<click:open_url:https://...>`   | Clickable text that opens a URL                 |
+| `<click:copy_to_clipboard:text>` | Clickable text that copies to clipboard         |
+| `<hover:show_text:'tooltip'>`    | Text shown when the cursor hovers over the line |
+| `<keybind:key.jump>`             | Renders the player's bound key for an action    |
+| `<lang:block.minecraft.dirt>`    | Renders a Minecraft translation key             |
 
 ### Title
 
@@ -922,13 +923,13 @@ player.hideBossBar(bar)
 
 #### BossBar.Overlay Options
 
-| Constant    | Appearance                             |
-|:------------|:---------------------------------------|
-| `PROGRESS`  | Solid bar (no notches)                 |
-| `NOTCHED_6` | Bar split into 6 notched segments      |
-| `NOTCHED_10`| Bar split into 10 notched segments     |
-| `NOTCHED_12`| Bar split into 12 notched segments     |
-| `NOTCHED_20`| Bar split into 20 notched segments     |
+| Constant     | Appearance                         |
+|:-------------|:-----------------------------------|
+| `PROGRESS`   | Solid bar (no notches)             |
+| `NOTCHED_6`  | Bar split into 6 notched segments  |
+| `NOTCHED_10` | Bar split into 10 notched segments |
+| `NOTCHED_12` | Bar split into 12 notched segments |
+| `NOTCHED_20` | Bar split into 20 notched segments |
 
 ### Sound
 
@@ -951,18 +952,18 @@ player.playSound(
 
 You can also use `net.kyori.adventure.sound.Sound.Source` to control which Minecraft audio channel the sound plays on:
 
-| Source       | Channel shown in game settings |
-|:-------------|:-------------------------------|
-| `MASTER`     | Master                         |
-| `MUSIC`      | Music                          |
-| `RECORD`     | Jukebox/Note Blocks            |
-| `WEATHER`    | Weather                        |
-| `BLOCK`      | Blocks                         |
-| `HOSTILE`    | Hostile Creatures              |
-| `NEUTRAL`    | Friendly Creatures             |
-| `PLAYER`     | Players                        |
-| `AMBIENT`    | Ambient/Environment            |
-| `VOICE`      | Voice/Speech                   |
+| Source    | Channel shown in game settings |
+|:----------|:-------------------------------|
+| `MASTER`  | Master                         |
+| `MUSIC`   | Music                          |
+| `RECORD`  | Jukebox/Note Blocks            |
+| `WEATHER` | Weather                        |
+| `BLOCK`   | Blocks                         |
+| `HOSTILE` | Hostile Creatures              |
+| `NEUTRAL` | Friendly Creatures             |
+| `PLAYER`  | Players                        |
+| `AMBIENT` | Ambient/Environment            |
+| `VOICE`   | Voice/Speech                   |
 
 Stop all sounds currently playing for a player:
 
