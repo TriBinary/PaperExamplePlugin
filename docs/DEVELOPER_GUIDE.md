@@ -476,6 +476,143 @@ class RewardsCommand : PluginCommand(
 
 ---
 
+## Adventure Library
+
+Paper bundles the [Kyori Adventure](https://docs.advntr.dev/) library, so no extra dependency is required. Adventure
+replaces the legacy Bukkit chat API and provides rich, structured text through immutable `Component` objects.
+
+### Component
+
+`Component` is the core type. Use `Component.text(...)` to create a plain-text component, and optionally apply a
+colour or decoration inline:
+
+```kotlin
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+
+// Plain text
+val plain = Component.text("Hello, world!")
+
+// Coloured text
+val coloured = Component.text("Hello, world!", NamedTextColor.GREEN)
+
+// Bold + coloured text
+val bold = Component.text("Hello, world!", NamedTextColor.GOLD, TextDecoration.BOLD)
+```
+
+#### NamedTextColor
+
+`NamedTextColor` exposes the 16 standard Minecraft colours as constants:
+
+| Constant        | In-game appearance   |
+|:----------------|:---------------------|
+| `BLACK`         | Black                |
+| `DARK_BLUE`     | Dark Blue            |
+| `DARK_GREEN`    | Dark Green           |
+| `DARK_AQUA`     | Dark Aqua            |
+| `DARK_RED`      | Dark Red             |
+| `DARK_PURPLE`   | Dark Purple          |
+| `GOLD`          | Gold                 |
+| `GRAY`          | Gray                 |
+| `DARK_GRAY`     | Dark Gray            |
+| `BLUE`          | Blue                 |
+| `GREEN`         | Green                |
+| `AQUA`          | Aqua                 |
+| `RED`           | Red                  |
+| `LIGHT_PURPLE`  | Light Purple         |
+| `YELLOW`        | Yellow               |
+| `WHITE`         | White                |
+
+#### TextDecoration
+
+`TextDecoration` applies visual styles to a component:
+
+| Constant        | Effect              |
+|:----------------|:--------------------|
+| `BOLD`          | Bold text           |
+| `ITALIC`        | Italic text         |
+| `UNDERLINED`    | Underlined text     |
+| `STRIKETHROUGH` | Strikethrough text  |
+| `OBFUSCATED`    | Obfuscated (matrix) |
+
+### Chaining Components
+
+Use `.append(Component)` to concatenate multiple styled segments into one message:
+
+```kotlin
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
+
+val message = Component.text("[ExamplePlugin] ", NamedTextColor.GOLD, TextDecoration.BOLD)
+    .append(Component.text("Welcome to the server!", NamedTextColor.YELLOW))
+
+sender.sendMessage(message)
+```
+
+### Sending Messages
+
+Both `CommandSender` (players and the console) and `Player` accept a `Component` directly via `sendMessage`:
+
+```kotlin
+// From a command
+sender.sendMessage(Component.text("Command executed!", NamedTextColor.GREEN))
+
+// From a listener
+event.player.sendMessage(Component.text("You joined!", NamedTextColor.AQUA))
+```
+
+To broadcast a message to every online player, use the Bukkit server instance:
+
+```kotlin
+import org.bukkit.Bukkit
+
+Bukkit.broadcast(Component.text("Server announcement!", NamedTextColor.GOLD))
+```
+
+### MiniMessage
+
+[MiniMessage](https://docs.advntr.dev/minimessage/index.html) is a string-based format that lets you express rich
+text with lightweight tags. The `ItemStack` DSL uses it internally, and you can use it anywhere you need to parse
+user-facing strings (e.g. from `config.yml`) into `Component` objects.
+
+```kotlin
+import net.kyori.adventure.text.minimessage.MiniMessage
+
+val mm = MiniMessage.miniMessage()
+
+// Colour
+val red = mm.deserialize("<red>This is red text")
+
+// Bold + gradient
+val fancy = mm.deserialize("<bold><gradient:gold:yellow>Fancy Title</gradient></bold>")
+
+// Multiple colours in one line
+val mixed = mm.deserialize("<green>Success: <white>operation completed")
+
+sender.sendMessage(fancy)
+```
+
+#### Common MiniMessage Tags
+
+| Tag                              | Effect                                          |
+|:---------------------------------|:------------------------------------------------|
+| `<color_name>` / `<red>`         | Named colour (same names as `NamedTextColor`)   |
+| `<#RRGGBB>`                      | Hex colour                                      |
+| `<bold>`, `<b>`                  | Bold                                            |
+| `<italic>`, `<i>`                | Italic                                          |
+| `<underlined>`, `<u>`            | Underline                                       |
+| `<strikethrough>`, `<st>`        | Strikethrough                                   |
+| `<obfuscated>`, `<obf>`          | Obfuscated                                      |
+| `<gradient:color1:color2>`       | Smooth gradient between two colours             |
+| `<reset>`                        | Reset all active styles                         |
+| `<newline>` / `<br>`             | Line break                                      |
+| `<click:run_command:/cmd>`       | Clickable text that runs a command              |
+| `<hover:show_text:'...'>`        | Text shown when the cursor hovers over the line |
+
+---
+
 ## ItemStack Builder DSL
 
 Building `ItemStack` instances with custom names, lore, enchantments, and flags normally requires verbose
