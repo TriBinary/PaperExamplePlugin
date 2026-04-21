@@ -270,20 +270,20 @@ or a subpackage.
 
 ### PluginGUI Properties
 
-| Property   | Type        | Default          | Description                                                     |
-|:-----------|:------------|:-----------------|:----------------------------------------------------------------|
-| `id`       | `String`    | *(required)*     | Unique identifier used to open the GUI                          |
-| `title`    | `Component` | *(required)*     | Title displayed at the top of the chest                         |
-| `rows`     | `Int`       | `3`              | Number of rows (1–6, each row = 9 slots)                        |
-| `fillMode` | `FillMode`  | `FillMode.NONE`  | Controls how empty slots are pre-filled before `setup` is called |
+| Property   | Type        | Default         | Description                                                      |
+|:-----------|:------------|:----------------|:-----------------------------------------------------------------|
+| `id`       | `String`    | *(required)*    | Unique identifier used to open the GUI                           |
+| `title`    | `Component` | *(required)*    | Title displayed at the top of the chest                          |
+| `rows`     | `Int`       | `3`             | Number of rows (1–6, each row = 9 slots)                         |
+| `fillMode` | `FillMode`  | `FillMode.NONE` | Controls how empty slots are pre-filled before `setup` is called |
 
 #### FillMode values
 
-| Value            | Filler item                | Description                                                                   |
-|:-----------------|:---------------------------|:------------------------------------------------------------------------------|
-| `FillMode.NONE`  | *(none)*                   | No filler is placed; the inventory is left empty before `setup` is called     |
-| `FillMode.LIGHT` | White stained glass pane   | All slots are pre-filled with white glass before `setup` — override in `setup` |
-| `FillMode.DARK`  | Black stained glass pane   | All slots are pre-filled with black glass before `setup` — override in `setup` |
+| Value            | Filler item              | Description                                                                    |
+|:-----------------|:-------------------------|:-------------------------------------------------------------------------------|
+| `FillMode.NONE`  | *(none)*                 | No filler is placed; the inventory is left empty before `setup` is called      |
+| `FillMode.LIGHT` | White stained glass pane | All slots are pre-filled with white glass before `setup` — override in `setup` |
+| `FillMode.DARK`  | Black stained glass pane | All slots are pre-filled with black glass before `setup` — override in `setup` |
 
 ### Methods to Override
 
