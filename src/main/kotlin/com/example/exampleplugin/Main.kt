@@ -1,6 +1,8 @@
 package com.example.exampleplugin
 
 import com.example.exampleplugin.config.PluginConfig
+import com.example.exampleplugin.data.PlayerDataManager
+import com.example.exampleplugin.data.ServerDataManager
 import com.example.exampleplugin.registration.CommandRegistrar
 import com.example.exampleplugin.registration.GUIManager
 import com.example.exampleplugin.registration.ListenerRegistrar
@@ -18,6 +20,11 @@ class Main : JavaPlugin() {
         logger.info("Loading configuration...")
         pluginConfig = PluginConfig(this)
 
+        // Initialise data managers
+        logger.info("Initialising data managers...")
+        ServerDataManager.init(this)
+        PlayerDataManager.init(this)
+
         // Register commands, listeners and GUIs
         logger.info("Registering commands...")
         CommandRegistrar.registerAll(this)
@@ -32,6 +39,10 @@ class Main : JavaPlugin() {
     }
 
     override fun onDisable() {
+        // Persist data for any players still online and server-wide data
+        PlayerDataManager.saveAll()
+        ServerDataManager.save()
+
         logger.info("Plugin disabled!")
     }
 }
