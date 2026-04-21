@@ -18,6 +18,8 @@ wire anything up.
 | Listeners     | `Listener`                | `com.example.exampleplugin.listeners` |
 | GUIs          | `PluginGUI`               | `com.example.exampleplugin.guis`      |
 | Configuration | `PluginConfig`            | `com.example.exampleplugin.config`    |
+| Player Data   | `PlayerData`              | `com.example.exampleplugin.data`      |
+| Server Data   | `ServerData`              | `com.example.exampleplugin.data`      |
 
 Subpackages are also scanned, so you can freely organize classes into folders like `commands/game/`,
 `listeners/player/`, or `guis/menus/`.
@@ -1180,6 +1182,193 @@ class WelcomeListener(private val plugin: JavaPlugin) : Listener {
         val main = plugin as? Main ?: return
         val prefix = main.pluginConfig.getString("message-prefix", "[ExamplePlugin]")
         event.player.sendMessage("$prefix Welcome, ${event.player.name}!")
+    }
+}
+```
+
+---
+
+## Player Data
+
+`PlayerDataManager` provides automatic, per-player JSON persistence. Data is loaded from disk when a player joins and
+written back when they quit. A fallback `saveAll()` call in `onDisable` protects data for any players still online when
+the server shuts down.
+
+JSON files are stored at `<dataFolder>/playerdata/<uuid>.json`.
+
+The manager is already initialised in `Main.onEnable` and requires no further setup for basic use.
+
+### Basic Usage
+
+Retrieve a player's data container from anywhere with a `Player` reference:
+
+```kotlin
+import com.example.exampleplugin.data.PlayerDataManager
+
+val data = PlayerDataManager.get(player)
+val kills = data.getInt("kills")
+data.set("kills", kills + 1)
+```
+
+### Typed Getters and Setters
+
+| Method      | Signature                          | Description                                    |
+|:------------|:-----------------------------------|:-----------------------------------------------|
+| `getString` | `getString(key, default = "")`     | Returns a `String` value                       |
+| `getInt`    | `getInt(key, default = 0)`         | Returns an `Int` value                         |
+| `getDouble` | `getDouble(key, default = 0.0)`    | Returns a `Double` value                       |
+| `getBoolean`| `getBoolean(key, default = false)` | Returns a `Boolean` value                      |
+| `set`       | `set(key, value)`                  | Stores a `String`, `Int`, `Double`, or `Boolean` |
+| `remove`    | `remove(key)`                      | Removes the entry at `key`                     |
+| `has`       | `has(key)`                         | Returns `true` when `key` exists               |
+
+### Custom Subclass
+
+Extend `PlayerData` to add strongly-typed Kotlin properties:
+
+```kotlin
+package com.example.exampleplugin.data
+
+import java.util.UUID
+
+class MyPlayerData(uuid: UUID) : PlayerData(uuid) {
+    var kills: Int
+        get() = getInt("kills")
+        set(value) = set("kills", value)
+
+    var lastSeen: String
+        get() = getString("lastSeen")
+        set(value) = set("lastSeen", value)
+}
+```
+
+Register the factory **before** `PlayerDataManager.init` is called (i.e. before it is called in `Main.onEnable`).
+The best place to do this is at the top of `onEnable`, before the call chain reaches the data manager:
+
+```kotlin
+override fun onEnable() {
+    PlayerDataManager.setFactory { uuid -> MyPlayerData(uuid) }
+    // ... rest of onEnable
+}
+```
+
+Then cast the result of `get`:
+
+```kotlin
+val data = PlayerDataManager.get(player) as MyPlayerData
+data.kills++
+```
+
+### Example Listener
+
+```kotlin
+package com.example.exampleplugin.listeners
+
+import com.example.exampleplugin.data.PlayerDataManager
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.PlayerDeathEvent
+
+class KillTracker : Listener {
+
+    @EventHandler
+    fun onPlayerDeath(event: PlayerDeathEvent) {
+        val killer = event.player.killer ?: return
+        val data = PlayerDataManager.get(killer)
+        data.set("kills", data.getInt("kills") + 1)
+    }
+}
+```
+
+---
+
+## Server Data
+
+`ServerDataManager` provides a single server-wide JSON data container. The data is loaded when the plugin enables and
+saved when it disables.
+
+The JSON file is stored at `<dataFolder>/serverdata.json`.
+
+The manager is already initialised in `Main.onEnable` and requires no further setup for basic use.
+
+### Basic Usage
+
+Retrieve the server data container from anywhere:
+
+```kotlin
+import com.example.exampleplugin.data.ServerDataManager
+
+val data = ServerDataManager.get()
+val events = data.getInt("eventCount")
+data.set("eventCount", events + 1)
+```
+
+### Typed Getters and Setters
+
+`ServerData` exposes the same typed methods as `PlayerData`:
+
+| Method      | Signature                          | Description                                    |
+|:------------|:-----------------------------------|:-----------------------------------------------|
+| `getString` | `getString(key, default = "")`     | Returns a `String` value                       |
+| `getInt`    | `getInt(key, default = 0)`         | Returns an `Int` value                         |
+| `getDouble` | `getDouble(key, default = 0.0)`    | Returns a `Double` value                       |
+| `getBoolean`| `getBoolean(key, default = false)` | Returns a `Boolean` value                      |
+| `set`       | `set(key, value)`                  | Stores a `String`, `Int`, `Double`, or `Boolean` |
+| `remove`    | `remove(key)`                      | Removes the entry at `key`                     |
+| `has`       | `has(key)`                         | Returns `true` when `key` exists               |
+
+### Custom Subclass
+
+Extend `ServerData` to add strongly-typed Kotlin properties:
+
+```kotlin
+package com.example.exampleplugin.data
+
+class MyServerData : ServerData() {
+    var totalKills: Int
+        get() = getInt("totalKills")
+        set(value) = set("totalKills", value)
+
+    var serverSeason: String
+        get() = getString("serverSeason", "1")
+        set(value) = set("serverSeason", value)
+}
+```
+
+Register the factory **before** `ServerDataManager.init` is called in `Main.onEnable`:
+
+```kotlin
+override fun onEnable() {
+    ServerDataManager.setFactory { MyServerData() }
+    // ... rest of onEnable
+}
+```
+
+Then cast the result of `get`:
+
+```kotlin
+val data = ServerDataManager.get() as MyServerData
+data.totalKills++
+```
+
+### Example Command
+
+```kotlin
+package com.example.exampleplugin.commands
+
+import com.example.exampleplugin.data.ServerDataManager
+import com.example.exampleplugin.registration.PluginCommand
+import org.bukkit.command.CommandSender
+
+class StatsCommand : PluginCommand(
+    name = "stats",
+    description = "Show server-wide statistics",
+    permission = "exampleplugin.stats"
+) {
+    override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        val data = ServerDataManager.get()
+        sender.sendMessage("Total kills on this server: ${data.getInt("totalKills")}")
+        return true
     }
 }
 ```
