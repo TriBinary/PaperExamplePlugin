@@ -3,10 +3,10 @@
 This guide covers the utility helpers provided in `com.example.exampleplugin.utils`. Each utility is designed to
 reduce boilerplate and provide commonly needed functionality out of the box.
 
-| Utility           | Description                                                 |
-|:------------------|:------------------------------------------------------------|
-| `itemStack`       | DSL builder for creating `ItemStack` instances concisely    |
-| `CountdownHelper` | Per-player countdown with configurable display and sound    |
+| Utility           | Description                                              |
+|:------------------|:---------------------------------------------------------|
+| `itemStack`       | DSL builder for creating `ItemStack` instances concisely |
+| `CountdownHelper` | Per-player countdown with configurable display and sound |
 
 ---
 
@@ -87,7 +87,8 @@ val head = itemStack(Material.PLAYER_HEAD) {
 ## CountdownHelper
 
 `CountdownHelper` runs a per-player countdown and displays the progress through a configurable
-`DisplayLocation` (see the [Developer Guide](DEVELOPER_GUIDE.md#displaylocation) for all values). It schedules a repeating sync task that ticks every second, shows an
+`DisplayLocation` (see the [Developer Guide](DEVELOPER_GUIDE.md#displaylocation) for all values). It schedules a
+repeating sync task that ticks every second, shows an
 optional message on each tick, and fires an optional finish message and callback when the countdown reaches zero.
 
 ### Usage
@@ -113,27 +114,27 @@ CountdownHelper().start(
 
 ### Parameters
 
-| Parameter         | Type                | Required | Default              | Description                                                          |
-|:------------------|:--------------------|:---------|:---------------------|:---------------------------------------------------------------------|
-| `plugin`          | `JavaPlugin`        | Yes      | —                    | The owning plugin, used to schedule the internal task                |
-| `player`          | `Player`            | Yes      | —                    | The player to target                                                 |
-| `seconds`         | `Int`               | Yes      | —                    | Total number of seconds to count down from (must be > 0)            |
-| `displayLocation` | `DisplayLocation`   | Yes      | —                    | Where messages are shown; use `DisplayLocation.NONE` to suppress all |
-| `message`         | `String?`           | No       | `null`               | MiniMessage string shown on every tick; omit to skip per-tick output |
-| `finishMessage`   | `String?`           | No       | `null`               | MiniMessage string shown when the countdown ends; omit to skip       |
-| `bossBarColor`    | `BossBar.Color`     | No       | `BossBar.Color.BLUE` | Boss bar colour; only used when `displayLocation` is `BOSS_BAR`     |
-| `sound`           | `Sound?`            | No       | `null`               | Sound played on every tick; pass `null` for silence                  |
-| `finishSound`     | `Sound?`            | No       | `null`               | Sound played when the countdown ends; pass `null` for silence        |
-| `onFinish`        | `(Player) -> Unit`  | Yes      | —                    | Callback invoked with the player when the countdown reaches zero     |
+| Parameter         | Type               | Required | Default              | Description                                                          |
+|:------------------|:-------------------|:---------|:---------------------|:---------------------------------------------------------------------|
+| `plugin`          | `JavaPlugin`       | Yes      | —                    | The owning plugin, used to schedule the internal task                |
+| `player`          | `Player`           | Yes      | —                    | The player to target                                                 |
+| `seconds`         | `Int`              | Yes      | —                    | Total number of seconds to count down from (must be > 0)             |
+| `displayLocation` | `DisplayLocation`  | Yes      | —                    | Where messages are shown; use `DisplayLocation.NONE` to suppress all |
+| `message`         | `String?`          | No       | `null`               | MiniMessage string shown on every tick; omit to skip per-tick output |
+| `finishMessage`   | `String?`          | No       | `null`               | MiniMessage string shown when the countdown ends; omit to skip       |
+| `bossBarColor`    | `BossBar.Color`    | No       | `BossBar.Color.BLUE` | Boss bar colour; only used when `displayLocation` is `BOSS_BAR`      |
+| `sound`           | `Sound?`           | No       | `null`               | Sound played on every tick; pass `null` for silence                  |
+| `finishSound`     | `Sound?`           | No       | `null`               | Sound played when the countdown ends; pass `null` for silence        |
+| `onFinish`        | `(Player) -> Unit` | Yes      | —                    | Callback invoked with the player when the countdown reaches zero     |
 
 ### Message Placeholders
 
 Both `message` and `finishMessage` support the following placeholders:
 
-| Placeholder  | Output example      |
-|:-------------|:--------------------|
-| `{seconds}`  | `5s`                |
-| `{time}`     | `1h 2m 3s`          |
+| Placeholder | Output example |
+|:------------|:---------------|
+| `{seconds}` | `5s`           |
+| `{time}`    | `1h 2m 3s`     |
 
 Either or both placeholders may be omitted from the message string.
 

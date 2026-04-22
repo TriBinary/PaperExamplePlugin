@@ -487,22 +487,22 @@ enables. All tasks are cancelled automatically when the plugin disables.
 
 ### PluginTask Properties
 
-| Property | Type      | Default | Description                                                                                      |
-|:---------|:----------|:--------|:-------------------------------------------------------------------------------------------------|
-| `delay`  | `Long`    | `0`     | Delay in ticks before the task first runs (20 ticks = 1 second)                                  |
-| `period` | `Long`    | `-1`    | Ticks between subsequent runs; use any negative value to schedule the task as a one-shot task    |
-| `async`  | `Boolean` | `false` | When `true`, the task runs off the main server thread (suitable for I/O or heavy computation)    |
+| Property | Type      | Default | Description                                                                                   |
+|:---------|:----------|:--------|:----------------------------------------------------------------------------------------------|
+| `delay`  | `Long`    | `0`     | Delay in ticks before the task first runs (20 ticks = 1 second)                               |
+| `period` | `Long`    | `-1`    | Ticks between subsequent runs; use any negative value to schedule the task as a one-shot task |
+| `async`  | `Boolean` | `false` | When `true`, the task runs off the main server thread (suitable for I/O or heavy computation) |
 
 ### Scheduling Behaviour
 
 The combination of `period` and `async` determines which Bukkit scheduler method is used:
 
-| `async` | `period >= 0` | Bukkit call                         |
-|:--------|:--------------|:------------------------------------|
-| `false` | Yes           | `runTaskTimer`                      |
-| `true`  | Yes           | `runTaskTimerAsynchronously`        |
-| `false` | No            | `runTaskLater`                      |
-| `true`  | No            | `runTaskLaterAsynchronously`        |
+| `async` | `period >= 0` | Bukkit call                  |
+|:--------|:--------------|:-----------------------------|
+| `false` | Yes           | `runTaskTimer`               |
+| `true`  | Yes           | `runTaskTimerAsynchronously` |
+| `false` | No            | `runTaskLater`               |
+| `true`  | No            | `runTaskLaterAsynchronously` |
 
 ### Methods to Override
 
