@@ -1,5 +1,7 @@
 package com.example.exampleplugin.data
 
+import com.example.exampleplugin.data.ServerDataManager.get
+import com.example.exampleplugin.data.ServerDataManager.init
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import org.bukkit.plugin.java.JavaPlugin

@@ -58,21 +58,31 @@ open class ServerData {
     // ── Typed Setters ───────────────────────────────────────────────────
 
     /** Stores a [String] value at [key]. */
-    fun set(key: String, value: String) { json.addProperty(key, value) }
+    fun set(key: String, value: String) {
+        json.addProperty(key, value)
+    }
 
     /** Stores an [Int] value at [key]. */
-    fun set(key: String, value: Int) { json.addProperty(key, value) }
+    fun set(key: String, value: Int) {
+        json.addProperty(key, value)
+    }
 
     /** Stores a [Double] value at [key]. */
-    fun set(key: String, value: Double) { json.addProperty(key, value) }
+    fun set(key: String, value: Double) {
+        json.addProperty(key, value)
+    }
 
     /** Stores a [Boolean] value at [key]. */
-    fun set(key: String, value: Boolean) { json.addProperty(key, value) }
+    fun set(key: String, value: Boolean) {
+        json.addProperty(key, value)
+    }
 
     // ── Utilities ───────────────────────────────────────────────────────
 
     /** Removes the entry at [key] from the backing store. */
-    fun remove(key: String) { json.remove(key) }
+    fun remove(key: String) {
+        json.remove(key)
+    }
 
     /** Returns `true` when [key] exists in the backing store. */
     fun has(key: String): Boolean = json.has(key)

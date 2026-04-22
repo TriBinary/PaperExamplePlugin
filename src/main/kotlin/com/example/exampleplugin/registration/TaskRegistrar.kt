@@ -1,5 +1,7 @@
 package com.example.exampleplugin.registration
 
+import com.example.exampleplugin.registration.TaskRegistrar.registerAll
+import com.example.exampleplugin.registration.TaskRegistrar.unregisterAll
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
 
@@ -96,7 +98,7 @@ object TaskRegistrar {
             } catch (_: NoSuchMethodException) {
                 throw IllegalArgumentException(
                     "${clazz.simpleName} must declare either a no-arg constructor " +
-                        "or a constructor accepting a single JavaPlugin parameter"
+                            "or a constructor accepting a single JavaPlugin parameter"
                 )
             }
         }

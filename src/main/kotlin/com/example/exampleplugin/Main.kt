@@ -3,11 +3,7 @@ package com.example.exampleplugin
 import com.example.exampleplugin.config.PluginConfig
 import com.example.exampleplugin.data.PlayerDataManager
 import com.example.exampleplugin.data.ServerDataManager
-import com.example.exampleplugin.registration.CommandRegistrar
-import com.example.exampleplugin.registration.GUIManager
-import com.example.exampleplugin.registration.ListenerRegistrar
-import com.example.exampleplugin.registration.PermissionRegistrar
-import com.example.exampleplugin.registration.TaskRegistrar
+import com.example.exampleplugin.registration.*
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {

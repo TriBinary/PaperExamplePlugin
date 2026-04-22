@@ -1,7 +1,6 @@
 package com.example.exampleplugin.registration
 
 import com.example.exampleplugin.enums.FillMode
-import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -115,7 +114,7 @@ object GUIManager : Listener {
             } catch (_: NoSuchMethodException) {
                 throw IllegalArgumentException(
                     "${clazz.simpleName} must declare either a no-arg constructor " +
-                        "or a constructor accepting a single JavaPlugin parameter"
+                            "or a constructor accepting a single JavaPlugin parameter"
                 )
             }
         }
@@ -128,8 +127,8 @@ object GUIManager : Listener {
     private fun fillInventory(gui: PluginGUI, inventory: Inventory) {
         val material = when (gui.fillMode) {
             FillMode.LIGHT -> Material.WHITE_STAINED_GLASS_PANE
-            FillMode.DARK  -> Material.BLACK_STAINED_GLASS_PANE
-            FillMode.NONE  -> return
+            FillMode.DARK -> Material.BLACK_STAINED_GLASS_PANE
+            FillMode.NONE -> return
         }
         val filler = ItemStack(material).also { item ->
             val meta = item.itemMeta

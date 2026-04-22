@@ -170,10 +170,12 @@ class CountdownHelper {
                     )
                 )
             )
+
             DisplayLocation.BOSS_BAR -> bossBar?.let {
                 it.name(mm.deserialize(formatted))
                 it.progress(progress)
             }
+
             DisplayLocation.ACTION_BAR -> player.sendActionBar(mm.deserialize(formatted))
         }
     }

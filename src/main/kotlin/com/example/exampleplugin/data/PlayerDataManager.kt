@@ -1,5 +1,7 @@
 package com.example.exampleplugin.data
 
+import com.example.exampleplugin.data.PlayerDataManager.get
+import com.example.exampleplugin.data.PlayerDataManager.init
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import org.bukkit.entity.Player
@@ -9,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.logging.Logger
 
