@@ -2,6 +2,7 @@ package com.example.exampleplugin.commands.moderation
 
 import com.example.exampleplugin.Main
 import com.example.exampleplugin.registration.PluginCommand
+import com.example.exampleplugin.utils.MessageUtil
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -23,6 +24,7 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
             return true
         }
         main.pluginConfig.reload()
+        MessageUtil.init(main.pluginConfig.messagePrefix)
         sender.sendMessage("Configuration reloaded!")
         return true
     }

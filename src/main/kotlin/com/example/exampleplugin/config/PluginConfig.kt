@@ -33,6 +33,15 @@ class PluginConfig(private val plugin: JavaPlugin) {
         config = plugin.config
     }
 
+    // ── Plugin Properties ────────────────────────────────────────────────
+
+    /**
+     * The prefix shown before plugin messages. Taken from the `message-prefix`
+     * key in `config.yml`. Supports plain text and MiniMessage formatting.
+     */
+    val messagePrefix: String
+        get() = getString("message-prefix", "[ExamplePlugin]")
+
     // ── Typed Getters ───────────────────────────────────────────────────
 
     /**

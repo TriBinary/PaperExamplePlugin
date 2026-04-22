@@ -4,6 +4,7 @@ import com.example.exampleplugin.config.PluginConfig
 import com.example.exampleplugin.data.PlayerDataManager
 import com.example.exampleplugin.data.ServerDataManager
 import com.example.exampleplugin.registration.*
+import com.example.exampleplugin.utils.MessageUtil
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
@@ -16,6 +17,7 @@ class Main : JavaPlugin() {
         // Load configuration
         logger.info("Loading configuration...")
         pluginConfig = PluginConfig(this)
+        MessageUtil.init(pluginConfig.messagePrefix)
 
         // Initialise data managers
         logger.info("Initialising data managers...")
