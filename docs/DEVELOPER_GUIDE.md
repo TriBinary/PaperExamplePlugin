@@ -1,8 +1,8 @@
 # ExamplePlugin - Developer Guide
 
-This guide explains how to create **commands**, **listeners**, **GUIs**, and work with the **configuration** system
-using ExamplePlugin's registration system. Commands, listeners, and GUIs all follow the same pattern: extend a base
-class (or implement an interface), place the file in the correct package, and the plugin handles the rest
+This guide explains how to create **commands**, **listeners**, **GUIs**, **tasks**, and work with the **configuration**
+system using ExamplePlugin's registration system. Commands, listeners, GUIs, and tasks all follow the same pattern:
+extend a base class (or implement an interface), place the file in the correct package, and the plugin handles the rest
 automatically at startup. The configuration system provides typed access to `config.yml` values.
 
 ## How Auto-Registration Works
@@ -17,6 +17,7 @@ wire anything up.
 | Permissions   | *(derived from commands)* | *(automatic — no package needed)*     |
 | Listeners     | `Listener`                | `com.example.exampleplugin.listeners` |
 | GUIs          | `PluginGUI`               | `com.example.exampleplugin.guis`      |
+| Tasks         | `PluginTask`              | `com.example.exampleplugin.tasks`     |
 | Configuration | `PluginConfig`            | `com.example.exampleplugin.config`    |
 | Player Data   | `PlayerData`              | `com.example.exampleplugin.data`      |
 | Server Data   | `ServerData`              | `com.example.exampleplugin.data`      |
@@ -26,7 +27,7 @@ Subpackages are also scanned, so you can freely organize classes into folders li
 
 ## Constructor Requirements
 
-Every command, listener, and GUI class must have one of the following constructors:
+Every command, listener, GUI, and task class must have one of the following constructors:
 
 | Constructor                          | When to Use                                   |
 |:-------------------------------------|:----------------------------------------------|
@@ -472,6 +473,103 @@ class RewardsCommand : PluginCommand(
         }
         GUIManager.open(sender, "rewards")
         return true
+    }
+}
+```
+
+---
+
+## Tasks
+
+To create a scheduled task, extend `PluginTask` and place the class anywhere inside the `tasks` package or a
+subpackage. The task is automatically discovered, instantiated, and scheduled by `TaskRegistrar` when the plugin
+enables. All tasks are cancelled automatically when the plugin disables.
+
+### PluginTask Properties
+
+| Property | Type      | Default | Description                                                                                      |
+|:---------|:----------|:--------|:-------------------------------------------------------------------------------------------------|
+| `delay`  | `Long`    | `0`     | Delay in ticks before the task first runs (20 ticks = 1 second)                                  |
+| `period` | `Long`    | `-1`    | Ticks between subsequent runs; use any negative value to schedule the task as a one-shot task    |
+| `async`  | `Boolean` | `false` | When `true`, the task runs off the main server thread (suitable for I/O or heavy computation)    |
+
+### Scheduling Behaviour
+
+The combination of `period` and `async` determines which Bukkit scheduler method is used:
+
+| `async` | `period >= 0` | Bukkit call                         |
+|:--------|:--------------|:------------------------------------|
+| `false` | Yes           | `runTaskTimer`                      |
+| `true`  | Yes           | `runTaskTimerAsynchronously`        |
+| `false` | No            | `runTaskLater`                      |
+| `true`  | No            | `runTaskLaterAsynchronously`        |
+
+### Methods to Override
+
+| Method | Required | Description                                                          |
+|:-------|:---------|:---------------------------------------------------------------------|
+| `run`  | Yes      | Called once (one-shot) or repeatedly (repeating) when the task fires |
+
+### Example (Repeating Sync Task)
+
+This task broadcasts a message to all players every 5 minutes:
+
+```kotlin
+package com.example.exampleplugin.tasks
+
+import com.example.exampleplugin.registration.PluginTask
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.Bukkit
+
+class BroadcastTask : PluginTask(
+    delay = 6000L,
+    period = 6000L
+) {
+    override fun run() {
+        Bukkit.broadcast(
+            Component.text("[ExamplePlugin] ", NamedTextColor.GOLD)
+                .append(Component.text("The server is running smoothly!", NamedTextColor.YELLOW))
+        )
+    }
+}
+```
+
+### Example (One-Shot Async Task)
+
+This task runs once 5 seconds after the plugin enables, off the main thread:
+
+```kotlin
+package com.example.exampleplugin.tasks
+
+import com.example.exampleplugin.registration.PluginTask
+
+class CleanupTask : PluginTask(
+    delay = 100L,
+    async = true
+) {
+    override fun run() {
+        // perform I/O or heavy computation here without blocking the server
+    }
+}
+```
+
+### Example with Plugin Instance
+
+When you need access to the plugin, declare a `JavaPlugin` constructor parameter:
+
+```kotlin
+package com.example.exampleplugin.tasks
+
+import com.example.exampleplugin.registration.PluginTask
+import org.bukkit.plugin.java.JavaPlugin
+
+class MetricsTask(private val plugin: JavaPlugin) : PluginTask(
+    delay = 200L,
+    period = 200L
+) {
+    override fun run() {
+        plugin.logger.info("Online players: ${plugin.server.onlinePlayers.size}")
     }
 }
 ```
