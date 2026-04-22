@@ -26,7 +26,7 @@ class Main : JavaPlugin() {
         ServerDataManager.init(this)
         PlayerDataManager.init(this)
 
-        // Register commands, listeners and GUIs
+        // Register commands, listeners, GUIs and tasks
         logger.info("Registering commands...")
         CommandRegistrar.registerAll(this)
         logger.info("Registering permissions...")
