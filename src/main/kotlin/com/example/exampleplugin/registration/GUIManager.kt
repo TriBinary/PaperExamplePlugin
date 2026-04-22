@@ -1,6 +1,7 @@
 package com.example.exampleplugin.registration
 
 import com.example.exampleplugin.enums.FillMode
+import com.example.exampleplugin.utils.itemStack
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -9,7 +10,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -130,10 +130,9 @@ object GUIManager : Listener {
             FillMode.DARK -> Material.BLACK_STAINED_GLASS_PANE
             FillMode.NONE -> return
         }
-        val filler = ItemStack(material).also { item ->
-            val meta = item.itemMeta
-            meta.displayName(net.kyori.adventure.text.Component.empty())
-            item.itemMeta = meta
+        val filler = itemStack(material) {
+            name(" ")
+            hideTooltip(true)
         }
         for (slot in 0 until inventory.size) {
             inventory.setItem(slot, filler.clone())
