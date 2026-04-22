@@ -1,5 +1,6 @@
 package com.example.exampleplugin.registration
 
+import com.example.exampleplugin.enums.FillMode
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material

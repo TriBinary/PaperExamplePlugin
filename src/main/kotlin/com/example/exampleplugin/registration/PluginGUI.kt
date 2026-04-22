@@ -1,5 +1,6 @@
 package com.example.exampleplugin.registration
 
+import com.example.exampleplugin.enums.FillMode
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent

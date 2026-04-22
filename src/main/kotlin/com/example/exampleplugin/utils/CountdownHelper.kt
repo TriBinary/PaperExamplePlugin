@@ -1,5 +1,6 @@
 package com.example.exampleplugin.utils
 
+import com.example.exampleplugin.enums.DisplayLocation
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.minimessage.MiniMessage

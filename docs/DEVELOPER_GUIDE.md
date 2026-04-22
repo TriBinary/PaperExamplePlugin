@@ -312,7 +312,7 @@ GUIManager.open(player, "settings")
 ```kotlin
 package com.example.exampleplugin.guis
 
-import com.example.exampleplugin.registration.FillMode
+import com.example.exampleplugin.enums.FillMode
 import com.example.exampleplugin.registration.PluginGUI
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -1100,7 +1100,8 @@ player.sendPlayerListHeaderAndFooter(Component.empty(), Component.empty())
 
 The `utils` package (`com.example.exampleplugin.utils`) contains helper classes and functions that reduce
 boilerplate across the plugin. See the [Utility Guide](UTILITY_GUIDE.md) for full documentation, including the
-`itemStack` DSL builder, `CountdownHelper`, and `DisplayLocation`.
+`itemStack` DSL builder and `CountdownHelper`. Enums such as `DisplayLocation` and `FillMode` live in the
+`com.example.exampleplugin.enums` package.
 
 ---
 

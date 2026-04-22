@@ -1,4 +1,4 @@
-package com.example.exampleplugin.utils
+package com.example.exampleplugin.enums
 
 /**
  * The location where countdown messages are displayed to the player.

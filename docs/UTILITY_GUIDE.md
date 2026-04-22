@@ -1,13 +1,14 @@
 # ExamplePlugin - Utility Guide
 
-This guide covers the utility helpers provided in `com.example.exampleplugin.utils`. Each utility is designed to
-reduce boilerplate and provide commonly needed functionality out of the box.
+This guide covers the utility helpers provided in `com.example.exampleplugin.utils` and the enums in
+`com.example.exampleplugin.enums`. Each utility is designed to reduce boilerplate and provide commonly needed
+functionality out of the box.
 
-| Utility              | Description                                                          |
-|:---------------------|:---------------------------------------------------------------------|
-| `itemStack`          | DSL builder for creating `ItemStack` instances concisely             |
-| `CountdownHelper`    | Per-player countdown with configurable display and sound             |
-| `DisplayLocation`    | Enum that controls where countdown messages are rendered             |
+| Utility              | Package                               | Description                                                          |
+|:---------------------|:--------------------------------------|:---------------------------------------------------------------------|
+| `itemStack`          | `com.example.exampleplugin.utils`     | DSL builder for creating `ItemStack` instances concisely             |
+| `CountdownHelper`    | `com.example.exampleplugin.utils`     | Per-player countdown with configurable display and sound             |
+| `DisplayLocation`    | `com.example.exampleplugin.enums`     | Enum that controls where countdown messages are rendered             |
 
 ---
 
@@ -95,7 +96,7 @@ optional message on each tick, and fires an optional finish message and callback
 
 ```kotlin
 import com.example.exampleplugin.utils.CountdownHelper
-import com.example.exampleplugin.utils.DisplayLocation
+import com.example.exampleplugin.enums.DisplayLocation
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 
@@ -142,7 +143,7 @@ Either or both placeholders may be omitted from the message string.
 
 ```kotlin
 import com.example.exampleplugin.utils.CountdownHelper
-import com.example.exampleplugin.utils.DisplayLocation
+import com.example.exampleplugin.enums.DisplayLocation
 
 CountdownHelper().start(
     plugin          = plugin,
@@ -159,7 +160,7 @@ CountdownHelper().start(
 
 ```kotlin
 import com.example.exampleplugin.utils.CountdownHelper
-import com.example.exampleplugin.utils.DisplayLocation
+import com.example.exampleplugin.enums.DisplayLocation
 import net.kyori.adventure.bossbar.BossBar
 
 CountdownHelper().start(
@@ -194,7 +195,7 @@ are rendered for the player.
 ### Usage
 
 ```kotlin
-import com.example.exampleplugin.utils.DisplayLocation
+import com.example.exampleplugin.enums.DisplayLocation
 
 // Use with CountdownHelper
 CountdownHelper().start(
