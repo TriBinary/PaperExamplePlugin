@@ -3,9 +3,9 @@
 This guide covers the utility helpers provided in `com.example.exampleplugin.utils`. Each utility is designed to
 reduce boilerplate and provide commonly needed functionality out of the box.
 
-| Utility           | Description                                              |
-|:------------------|:---------------------------------------------------------|
-| `itemStack`       | DSL builder for creating `ItemStack` instances concisely |
+| Utility         | Description                                              |
+|:----------------|:---------------------------------------------------------|
+| `itemStack`     | DSL builder for creating `ItemStack` instances concisely |
 | `CountdownUtil` | Per-player countdown with configurable display and sound |
 
 ---
@@ -163,14 +163,14 @@ import com.example.exampleplugin.enums.DisplayLocation
 import net.kyori.adventure.bossbar.BossBar
 
 CountdownUtil().start(
-    plugin          = plugin,
-    player          = player,
-    seconds         = 30,
+    plugin = plugin,
+    player = player,
+    seconds = 30,
     displayLocation = DisplayLocation.BOSS_BAR,
-    bossBarColor    = BossBar.Color.RED,
-    message         = "<red>Time remaining: {time}",
-    finishMessage   = "<green>Time's up!",
-    onFinish        = { p -> p.sendMessage("Round over!") }
+    bossBarColor = BossBar.Color.RED,
+    message = "<red>Time remaining: {time}",
+    finishMessage = "<green>Time's up!",
+    onFinish = { p -> p.sendMessage("Round over!") }
 )
 ```
 
