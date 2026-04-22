@@ -23,8 +23,7 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
         val main = plugin as? Main
         if (main == null) {
             if (sender is Player) {
-                val player = sender as Player
-                player.sendPrefixed("<red>Error: Plugin instance type mismatch. Unable to reload configuration.")
+                sender.sendPrefixed("<red>Error: Plugin instance type mismatch. Unable to reload configuration.")
             } else {
                 sender.sendMessage("Error: Plugin instance type mismatch. Unable to reload configuration.")
             }
@@ -33,8 +32,7 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
         main.pluginConfig.reload()
         MessageUtil.init(main.pluginConfig.messagePrefix)
         if (sender is Player) {
-            val player = sender as Player
-            player.sendPrefixed("Configuration reloaded!")
+            sender.sendPrefixed("Configuration reloaded!")
         } else {
             sender.sendMessage("Configuration reloaded!")
         }
