@@ -1,6 +1,7 @@
 package com.example.exampleplugin.registration
 
 import com.example.exampleplugin.enums.FillMode
+import com.example.exampleplugin.utils.itemStack
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Material
@@ -149,6 +150,8 @@ abstract class PagedPluginGUI(
     private fun renderPage(player: Player, inventory: Inventory, page: Int) {
         inventory.clear()
 
+        fillInventory(this, inventory)
+
         val items = getItems(player)
         val totalPages = totalPages(items.size)
         val start = page * contentSlots
@@ -204,5 +207,24 @@ abstract class PagedPluginGUI(
         private const val PREVIOUS_OFFSET = 0
         private const val PAGE_INDICATOR_OFFSET = 4
         private const val NEXT_OFFSET = 8
+    }
+
+    /**
+     * Pre-fills all slots in [inventory] with a filler glass pane determined
+     * by the GUI's [FillMode].  Does nothing when the mode is [FillMode.NONE].
+     */
+    private fun fillInventory(gui: PluginGUI, inventory: Inventory) {
+        val material = when (gui.fillMode) {
+            FillMode.LIGHT -> Material.WHITE_STAINED_GLASS_PANE
+            FillMode.DARK -> Material.BLACK_STAINED_GLASS_PANE
+            FillMode.NONE -> return
+        }
+        val filler = itemStack(material) {
+            name(" ")
+            hideTooltip(true)
+        }
+        for (slot in 0 until inventory.size) {
+            inventory.setItem(slot, filler.clone())
+        }
     }
 }
