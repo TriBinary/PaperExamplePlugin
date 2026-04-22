@@ -43,7 +43,7 @@ See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) for detailed instructio
 GUIs, working with the configuration system, and managing player and server data.
 
 See [`docs/UTILITY_GUIDE.md`](docs/UTILITY_GUIDE.md) for documentation on the built-in utility helpers such as
-the `itemStack` DSL builder and `CountdownHelper`.
+the `itemStack` DSL builder and `CountdownUtil`.
 
 See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md#enums) for documentation on plugin-wide enums such as
 `DisplayLocation` and `FillMode`.

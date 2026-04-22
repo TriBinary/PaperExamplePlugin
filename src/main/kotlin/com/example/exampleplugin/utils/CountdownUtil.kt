@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.time.Duration
 
 /**
- * Helper that runs a per-player countdown and displays the progress through
+ * Utility that runs a per-player countdown and displays the progress through
  * one of the available [DisplayLocation]s.
  *
  * ### Message placeholders
@@ -39,7 +39,7 @@ import java.time.Duration
  *
  * ### Example usage
  * ```kotlin
- * CountdownHelper().start(
+ * CountdownUtil().start(
  *     plugin          = plugin,
  *     player          = player,
  *     seconds         = 10,
@@ -52,7 +52,7 @@ import java.time.Duration
  * )
  * ```
  */
-class CountdownHelper {
+class CountdownUtil {
     private val mm = MiniMessage.miniMessage()
 
     /**
