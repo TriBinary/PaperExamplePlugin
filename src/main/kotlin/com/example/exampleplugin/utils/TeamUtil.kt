@@ -1,12 +1,14 @@
 package com.example.exampleplugin.utils
 
 import com.example.exampleplugin.data.ServerDataManager
+import com.example.exampleplugin.utils.TeamUtil.addPlayer
+import com.example.exampleplugin.utils.TeamUtil.invalidateCache
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import java.util.UUID
+import java.util.*
 
 /**
  * Represents a custom team managed by [TeamUtil].
@@ -103,6 +105,7 @@ object TeamUtil {
     private const val TEAMS_KEY = "teams"
 
     private val teamCache = mutableMapOf<String, Team>()
+
     // Reverse index: member UUID -> team name for O(1) getPlayerTeam lookups
     private val memberIndex = mutableMapOf<UUID, String>()
     private var loaded = false
