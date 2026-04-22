@@ -9,6 +9,7 @@ reduce boilerplate and provide commonly needed functionality out of the box.
 | `CountdownUtil` | Per-player countdown with configurable display and sound |
 | `TeamUtil`      | Custom team management with server-data persistence      |
 | `TagUtil`       | Per-player string tag management with player-data persistence |
+| `MessageUtil`   | Prefix-decorated message sender for players and command senders |
 
 ---
 
@@ -352,6 +353,84 @@ fun onEnterVipArea(player: Player) {
         return
     }
     player.sendMessage("<gold>Welcome to the VIP area!")
+}
+```
+
+---
+
+## MessageUtil
+
+`MessageUtil` sends prefix-decorated messages to players and command senders. The prefix is
+read from `config.yml` under the `message-prefix` key and supports both plain text and
+[MiniMessage](https://docs.advntr.dev/minimessage/index.html) formatting. The plugin
+initialises `MessageUtil` automatically at startup and after every `/exampleplugin reload`,
+so no manual setup is required in your own commands or listeners.
+
+### Configuration
+
+```yaml
+# config.yml
+
+# Plain text
+message-prefix: "[ExamplePlugin]"
+
+# MiniMessage (rich formatting)
+message-prefix: "<gray>[<gold>ExamplePlugin<gray>]"
+```
+
+### Usage
+
+```kotlin
+import com.example.exampleplugin.utils.sendPrefixed
+
+// Plain text
+player.sendPrefixed("Hello!")
+
+// MiniMessage
+player.sendPrefixed("<green>Operation successful!")
+player.sendPrefixed("<red>Something went wrong.")
+
+// Adventure Component
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+
+player.sendPrefixed(Component.text("Hello!", NamedTextColor.GREEN))
+
+// Works on any CommandSender (console, players, command blocks)
+sender.sendPrefixed("Configuration reloaded!")
+```
+
+### Methods
+
+| Method / Extension                      | Description                                                        |
+|:----------------------------------------|:-------------------------------------------------------------------|
+| `MessageUtil.init(prefixString)`        | Loads the prefix (plain text or MiniMessage). Called automatically at startup and on reload. |
+| `MessageUtil.sendPrefixed(sender, msg: String)` | Sends a plain-text or MiniMessage string with the prefix prepended. |
+| `MessageUtil.sendPrefixed(sender, msg: Component)` | Sends an Adventure `Component` with the prefix prepended. |
+| `CommandSender.sendPrefixed(msg: String)` | Extension shorthand for `MessageUtil.sendPrefixed(this, msg)`. |
+| `CommandSender.sendPrefixed(msg: Component)` | Extension shorthand for `MessageUtil.sendPrefixed(this, msg)`. |
+
+### Example (Command)
+
+```kotlin
+import com.example.exampleplugin.registration.PluginCommand
+import com.example.exampleplugin.utils.sendPrefixed
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.command.CommandSender
+
+class GreetCommand : PluginCommand(
+    name = "greet",
+    description = "Send a greeting"
+) {
+    override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        // String (MiniMessage)
+        sender.sendPrefixed("<green>Welcome to the server!")
+
+        // Component
+        sender.sendPrefixed(Component.text("Hello!", NamedTextColor.GOLD))
+        return true
+    }
 }
 ```
 
