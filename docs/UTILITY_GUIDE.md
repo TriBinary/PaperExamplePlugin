@@ -382,6 +382,8 @@ message-prefix: "<gray>[<gold>ExamplePlugin<gray>]"
 
 ```kotlin
 import com.example.exampleplugin.utils.sendPrefixed
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 
 // Plain text
 player.sendPrefixed("Hello!")
@@ -391,9 +393,6 @@ player.sendPrefixed("<green>Operation successful!")
 player.sendPrefixed("<red>Something went wrong.")
 
 // Adventure Component
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-
 player.sendPrefixed(Component.text("Hello!", NamedTextColor.GREEN))
 ```
 
