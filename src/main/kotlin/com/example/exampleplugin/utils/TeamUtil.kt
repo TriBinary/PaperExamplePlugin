@@ -62,7 +62,7 @@ class Team(
 /**
  * Singleton utility for managing custom teams with per-player membership
  * enforcement. Each player may belong to at most one team at a time — calling
- * [joinTeam] when a player is already in another team automatically removes
+ * [addPlayer] when a player is already in another team automatically removes
  * them from it first.
  *
  * Teams are persisted inside [ServerDataManager]'s server-wide JSON store
@@ -75,8 +75,8 @@ class Team(
  * // Create a team
  * TeamUtil.createTeam("red", "<red>Red Team")
  *
- * // Add a player to a team (auto-leaves any previous team)
- * TeamUtil.joinTeam(player, "red")
+ * // Add a player to a team (auto-removes from any previous team)
+ * TeamUtil.addPlayer(player, "red")
  *
  * // Get the team a player belongs to
  * val team = TeamUtil.getPlayerTeam(player)
@@ -85,7 +85,7 @@ class Team(
  * TeamUtil.getTeam("red")?.broadcast("<yellow>Hello, team!")
  *
  * // Remove a player from their current team
- * TeamUtil.leaveTeam(player)
+ * TeamUtil.removePlayer(player)
  * ```
  *
  * ### Persistence
@@ -140,6 +140,16 @@ object TeamUtil {
         team.members.forEach { memberIndex.remove(it) }
         persist()
         return true
+    }
+
+    /**
+     * Deletes all existing teams, removing every member from every team.
+     */
+    fun deleteAll() {
+        ensureLoaded()
+        teamCache.clear()
+        memberIndex.clear()
+        persist()
     }
 
     /**
@@ -198,11 +208,11 @@ object TeamUtil {
      * @return `true` if the player was added to the team; `false` if the team
      *         does not exist or the player was already in that team
      */
-    fun joinTeam(player: Player, teamName: String): Boolean {
+    fun addPlayer(player: Player, teamName: String): Boolean {
         ensureLoaded()
         val team = teamCache[teamName.lowercase()] ?: return false
         if (team.contains(player)) return false
-        // Remove from any current team before joining the new one
+        // Remove from any current team before adding to the new one
         val current = teamCache[memberIndex[player.uniqueId]]
         current?.members?.remove(player.uniqueId)
         team.members.add(player.uniqueId)
@@ -218,7 +228,7 @@ object TeamUtil {
      * @return `true` if the player was removed from a team; `false` if they
      *         were not in any team
      */
-    fun leaveTeam(player: Player): Boolean {
+    fun removePlayer(player: Player): Boolean {
         ensureLoaded()
         val team = getPlayerTeam(player) ?: return false
         team.members.remove(player.uniqueId)
@@ -248,6 +258,30 @@ object TeamUtil {
     fun isInTeam(player: Player, teamName: String): Boolean {
         ensureLoaded()
         return teamCache[teamName.lowercase()]?.contains(player) ?: false
+    }
+
+    /**
+     * Returns `true` if [playerA] and [playerB] are both members of the same
+     * team. Returns `false` if either player is not in any team.
+     *
+     * @param playerA the first player
+     * @param playerB the second player
+     */
+    fun areTeammates(playerA: Player, playerB: Player): Boolean {
+        ensureLoaded()
+        val teamName = memberIndex[playerA.uniqueId] ?: return false
+        return teamName == memberIndex[playerB.uniqueId]
+    }
+
+    /**
+     * Sends [message] (parsed as MiniMessage) to all currently online members
+     * of every existing team.
+     *
+     * @param message the MiniMessage string to broadcast
+     */
+    fun broadcastAll(message: String) {
+        ensureLoaded()
+        teamCache.values.forEach { it.broadcast(message) }
     }
 
     // ── Cache ────────────────────────────────────────────────────────────

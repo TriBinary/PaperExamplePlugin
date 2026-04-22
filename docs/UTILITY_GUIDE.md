@@ -181,7 +181,7 @@ CountdownUtil().start(
 
 `TeamUtil` manages custom teams with persistent, server-wide state backed by
 [`ServerDataManager`](DEVELOPER_GUIDE.md#server-data). Each player may belong
-to **at most one team** at a time — calling `joinTeam` when a player is already
+to **at most one team** at a time — calling `addPlayer` when a player is already
 in another team removes them from that team first. All changes are written into
 the server-data JSON immediately, so they are flushed to disk when
 `ServerDataManager.save()` is called in `JavaPlugin.onDisable`.
@@ -196,7 +196,7 @@ TeamUtil.createTeam("red", "<red>Red Team")
 TeamUtil.createTeam("blue", "<blue>Blue Team")
 
 // Add a player — automatically removes them from any previous team
-TeamUtil.joinTeam(player, "red")
+TeamUtil.addPlayer(player, "red")
 
 // Find which team a player is in
 val team = TeamUtil.getPlayerTeam(player)
@@ -204,11 +204,20 @@ val team = TeamUtil.getPlayerTeam(player)
 // Broadcast a MiniMessage string to all online members of a team
 team?.broadcast("<yellow>Get ready to fight!")
 
+// Check if two players are on the same team
+val sameTeam = TeamUtil.areTeammates(playerA, playerB)
+
+// Broadcast to all online members across every team
+TeamUtil.broadcastAll("<green>The game is starting!")
+
 // Remove a player from their team
-TeamUtil.leaveTeam(player)
+TeamUtil.removePlayer(player)
 
 // Delete a team entirely (members are removed along with it)
 TeamUtil.deleteTeam("red")
+
+// Delete all teams at once
+TeamUtil.deleteAll()
 ```
 
 ### Team Management Methods
@@ -217,6 +226,7 @@ TeamUtil.deleteTeam("red")
 |:-------------------------------------------|:-----------|:-------------------------------------------------------------------------|
 | `createTeam(name, displayName)`            | `Boolean`  | Creates a team; returns `false` if the name is already taken             |
 | `deleteTeam(name)`                         | `Boolean`  | Deletes a team and all its members; returns `false` if not found         |
+| `deleteAll()`                              | `Unit`     | Deletes every team, clearing all members                                 |
 | `renameTeam(name, newDisplayName)`         | `Boolean`  | Updates the display name; returns `false` if the team does not exist     |
 | `getTeam(name)`                            | `Team?`    | Returns the team, or `null` if it does not exist                         |
 | `getAllTeams()`                             | `List<Team>` | Returns every existing team                                             |
@@ -226,12 +236,14 @@ All name lookups are **case-insensitive**. The stored key is always lowercase.
 
 ### Player Membership Methods
 
-| Method                          | Return   | Description                                                                              |
-|:--------------------------------|:---------|:-----------------------------------------------------------------------------------------|
-| `joinTeam(player, teamName)`    | `Boolean` | Adds the player to a team, auto-leaving any current team; returns `false` if team not found or player already in it |
-| `leaveTeam(player)`             | `Boolean` | Removes the player from their current team; returns `false` if not in any team           |
-| `getPlayerTeam(player)`         | `Team?`   | Returns the player's team, or `null`                                                     |
-| `isInTeam(player, teamName)`    | `Boolean` | Returns `true` if the player is a member of the named team                               |
+| Method                             | Return    | Description                                                                                                         |
+|:-----------------------------------|:----------|:--------------------------------------------------------------------------------------------------------------------|
+| `addPlayer(player, teamName)`      | `Boolean` | Adds the player to a team, auto-removing from any current team; returns `false` if team not found or player already in it |
+| `removePlayer(player)`             | `Boolean` | Removes the player from their current team; returns `false` if not in any team                                      |
+| `getPlayerTeam(player)`            | `Team?`   | Returns the player's team, or `null`                                                                                |
+| `isInTeam(player, teamName)`       | `Boolean` | Returns `true` if the player is a member of the named team                                                          |
+| `areTeammates(playerA, playerB)`   | `Boolean` | Returns `true` if both players are in the same team; `false` if either is not in any team                          |
+| `broadcastAll(message)`            | `Unit`    | Sends a MiniMessage string to all online members across every team                                                  |
 
 ### Team Instance Methods
 
@@ -266,7 +278,7 @@ fun setupGame(players: List<Player>) {
 
     players.forEachIndexed { index, player ->
         val teamName = if (index % 2 == 0) "red" else "blue"
-        TeamUtil.joinTeam(player, teamName)
+        TeamUtil.addPlayer(player, teamName)
     }
 
     TeamUtil.getTeam("red")?.broadcast("<red>You are on the Red Team!")
@@ -274,11 +286,8 @@ fun setupGame(players: List<Player>) {
 }
 
 fun endGame() {
-    for (team in TeamUtil.getAllTeams()) {
-        team.broadcast("<green>The game has ended. Thanks for playing!")
-    }
-    TeamUtil.deleteTeam("red")
-    TeamUtil.deleteTeam("blue")
+    TeamUtil.broadcastAll("<green>The game has ended. Thanks for playing!")
+    TeamUtil.deleteAll()
 }
 ```
 
