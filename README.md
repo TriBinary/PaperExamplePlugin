@@ -40,3 +40,6 @@ src/main/kotlin/com/example/exampleplugin/
 See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md) for detailed instructions on creating commands, listeners,
 GUIs, working with the configuration system, and managing player and server data.
 
+See [`docs/UTILITY_GUIDE.md`](docs/UTILITY_GUIDE.md) for documentation on the built-in utility helpers such as
+the `itemStack` DSL builder and `CountdownHelper`.
+
