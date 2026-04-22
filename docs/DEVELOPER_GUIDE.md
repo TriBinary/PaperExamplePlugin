@@ -1100,7 +1100,7 @@ player.sendPlayerListHeaderAndFooter(Component.empty(), Component.empty())
 
 The `utils` package (`com.example.exampleplugin.utils`) contains helper classes and functions that reduce
 boilerplate across the plugin. See the [Utility Guide](UTILITY_GUIDE.md) for full documentation on the
-`itemStack` DSL builder and `CountdownHelper`.
+`itemStack` DSL builder and `CountdownUtil`.
 
 ### Enums
 
@@ -1108,7 +1108,7 @@ Plugin-wide enums live in `com.example.exampleplugin.enums`.
 
 #### DisplayLocation
 
-`DisplayLocation` is used by `CountdownHelper` to control where countdown messages are rendered for the player.
+`DisplayLocation` is used by `CountdownUtil` to control where countdown messages are rendered for the player.
 
 | Value        | Behaviour                                              |
 |:-------------|:-------------------------------------------------------|

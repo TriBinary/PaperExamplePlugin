@@ -6,7 +6,7 @@ reduce boilerplate and provide commonly needed functionality out of the box.
 | Utility           | Description                                              |
 |:------------------|:---------------------------------------------------------|
 | `itemStack`       | DSL builder for creating `ItemStack` instances concisely |
-| `CountdownHelper` | Per-player countdown with configurable display and sound |
+| `CountdownUtil` | Per-player countdown with configurable display and sound |
 
 ---
 
@@ -84,9 +84,9 @@ val head = itemStack(Material.PLAYER_HEAD) {
 
 ---
 
-## CountdownHelper
+## CountdownUtil
 
-`CountdownHelper` runs a per-player countdown and displays the progress through a configurable
+`CountdownUtil` runs a per-player countdown and displays the progress through a configurable
 `DisplayLocation` (see the [Developer Guide](DEVELOPER_GUIDE.md#displaylocation) for all values). It schedules a
 repeating sync task that ticks every second, shows an
 optional message on each tick, and fires an optional finish message and callback when the countdown reaches zero.
@@ -94,12 +94,12 @@ optional message on each tick, and fires an optional finish message and callback
 ### Usage
 
 ```kotlin
-import com.example.exampleplugin.utils.CountdownHelper
+import com.example.exampleplugin.utils.CountdownUtil
 import com.example.exampleplugin.enums.DisplayLocation
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 
-CountdownHelper().start(
+CountdownUtil().start(
     plugin          = plugin,
     player          = player,
     seconds         = 10,
@@ -141,10 +141,10 @@ Either or both placeholders may be omitted from the message string.
 ### Example (Chat Countdown)
 
 ```kotlin
-import com.example.exampleplugin.utils.CountdownHelper
+import com.example.exampleplugin.utils.CountdownUtil
 import com.example.exampleplugin.enums.DisplayLocation
 
-CountdownHelper().start(
+CountdownUtil().start(
     plugin          = plugin,
     player          = player,
     seconds         = 5,
@@ -158,11 +158,11 @@ CountdownHelper().start(
 ### Example (Boss Bar Countdown)
 
 ```kotlin
-import com.example.exampleplugin.utils.CountdownHelper
+import com.example.exampleplugin.utils.CountdownUtil
 import com.example.exampleplugin.enums.DisplayLocation
 import net.kyori.adventure.bossbar.BossBar
 
-CountdownHelper().start(
+CountdownUtil().start(
     plugin          = plugin,
     player          = player,
     seconds         = 30,
