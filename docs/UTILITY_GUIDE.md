@@ -1,14 +1,12 @@
 # ExamplePlugin - Utility Guide
 
-This guide covers the utility helpers provided in `com.example.exampleplugin.utils` and the enums in
-`com.example.exampleplugin.enums`. Each utility is designed to reduce boilerplate and provide commonly needed
-functionality out of the box.
+This guide covers the utility helpers provided in `com.example.exampleplugin.utils`. Each utility is designed to
+reduce boilerplate and provide commonly needed functionality out of the box.
 
-| Utility              | Package                               | Description                                                          |
-|:---------------------|:--------------------------------------|:---------------------------------------------------------------------|
-| `itemStack`          | `com.example.exampleplugin.utils`     | DSL builder for creating `ItemStack` instances concisely             |
-| `CountdownHelper`    | `com.example.exampleplugin.utils`     | Per-player countdown with configurable display and sound             |
-| `DisplayLocation`    | `com.example.exampleplugin.enums`     | Enum that controls where countdown messages are rendered             |
+| Utility           | Description                                                 |
+|:------------------|:------------------------------------------------------------|
+| `itemStack`       | DSL builder for creating `ItemStack` instances concisely    |
+| `CountdownHelper` | Per-player countdown with configurable display and sound    |
 
 ---
 
@@ -89,7 +87,7 @@ val head = itemStack(Material.PLAYER_HEAD) {
 ## CountdownHelper
 
 `CountdownHelper` runs a per-player countdown and displays the progress through a configurable
-[`DisplayLocation`](#displaylocation). It schedules a repeating sync task that ticks every second, shows an
+`DisplayLocation` (see the [Developer Guide](DEVELOPER_GUIDE.md#displaylocation) for all values). It schedules a repeating sync task that ticks every second, shows an
 optional message on each tick, and fires an optional finish message and callback when the countdown reaches zero.
 
 ### Usage
@@ -172,38 +170,6 @@ CountdownHelper().start(
     message         = "<red>Time remaining: {time}",
     finishMessage   = "<green>Time's up!",
     onFinish        = { p -> p.sendMessage("Round over!") }
-)
-```
-
----
-
-## DisplayLocation
-
-`DisplayLocation` is an enum used by [`CountdownHelper`](#countdownhelper) to control where countdown messages
-are rendered for the player.
-
-### Values
-
-| Value        | Behaviour                                              |
-|:-------------|:-------------------------------------------------------|
-| `NONE`       | No message is displayed                                |
-| `CHAT`       | Message is sent to the player's chat                   |
-| `TITLE`      | Message is shown as a screen title                     |
-| `BOSS_BAR`   | Message is shown in a boss bar that depletes over time |
-| `ACTION_BAR` | Message is shown above the hotbar                      |
-
-### Usage
-
-```kotlin
-import com.example.exampleplugin.enums.DisplayLocation
-
-// Use with CountdownHelper
-CountdownHelper().start(
-    plugin          = plugin,
-    player          = player,
-    seconds         = 10,
-    displayLocation = DisplayLocation.ACTION_BAR,
-    onFinish        = { /* ... */ }
 )
 ```
 

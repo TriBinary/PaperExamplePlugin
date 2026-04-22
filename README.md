@@ -30,6 +30,7 @@ src/main/kotlin/com/example/exampleplugin/
 ├── commands/                # Auto-registered commands (extend PluginCommand)
 ├── config/                  # Typed configuration wrapper (PluginConfig)
 ├── data/                    # JSON-persisted player and server data (PlayerData, ServerData)
+├── enums/                   # Plugin-wide enums (e.g. FillMode, DisplayLocation)
 ├── guis/                    # Auto-registered GUIs (extend PluginGUI)
 ├── listeners/               # Auto-registered listeners (implement Listener)
 ├── registration/            # Auto-registration framework
@@ -42,4 +43,7 @@ GUIs, working with the configuration system, and managing player and server data
 
 See [`docs/UTILITY_GUIDE.md`](docs/UTILITY_GUIDE.md) for documentation on the built-in utility helpers such as
 the `itemStack` DSL builder and `CountdownHelper`.
+
+See [`docs/DEVELOPER_GUIDE.md`](docs/DEVELOPER_GUIDE.md#enums) for documentation on plugin-wide enums such as
+`DisplayLocation` and `FillMode`.
 
