@@ -3,7 +3,9 @@ package com.example.exampleplugin.commands.moderation
 import com.example.exampleplugin.Main
 import com.example.exampleplugin.registration.PluginCommand
 import com.example.exampleplugin.utils.MessageUtil
+import com.example.exampleplugin.utils.sendPrefixed
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 
 /**
@@ -20,7 +22,12 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
     override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
         val main = plugin as? Main
         if (main == null) {
-            sender.sendMessage("Error: Plugin instance type mismatch. Unable to reload configuration.")
+            if (sender is Player) {
+                val player = sender as Player
+                player.sendPrefixed("<red>Error: Plugin instance type mismatch. Unable to reload configuration.")
+            } else {
+                sender.sendMessage("Error: Plugin instance type mismatch. Unable to reload configuration.")
+            }
             return true
         }
         main.pluginConfig.reload()
