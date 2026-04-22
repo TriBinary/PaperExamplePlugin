@@ -3,13 +3,13 @@
 This guide covers the utility helpers provided in `com.example.exampleplugin.utils`. Each utility is designed to
 reduce boilerplate and provide commonly needed functionality out of the box.
 
-| Utility         | Description                                              |
-|:----------------|:---------------------------------------------------------|
-| `itemStack`     | DSL builder for creating `ItemStack` instances concisely |
-| `CountdownUtil` | Per-player countdown with configurable display and sound |
-| `TeamUtil`      | Custom team management with server-data persistence      |
+| Utility         | Description                                                   |
+|:----------------|:--------------------------------------------------------------|
+| `itemStack`     | DSL builder for creating `ItemStack` instances concisely      |
+| `CountdownUtil` | Per-player countdown with configurable display and sound      |
+| `TeamUtil`      | Custom team management with server-data persistence           |
 | `TagUtil`       | Per-player string tag management with player-data persistence |
-| `MessageUtil`   | Prefix-decorated message sender for players |
+| `MessageUtil`   | Prefix-decorated message sender for players                   |
 
 ---
 
@@ -224,43 +224,43 @@ TeamUtil.deleteAll()
 
 ### Team Management Methods
 
-| Method                                     | Return     | Description                                                              |
-|:-------------------------------------------|:-----------|:-------------------------------------------------------------------------|
-| `createTeam(name, displayName)`            | `Boolean`  | Creates a team; returns `false` if the name is already taken             |
-| `deleteTeam(name)`                         | `Boolean`  | Deletes a team and all its members; returns `false` if not found         |
-| `deleteAll()`                              | `Unit`     | Deletes every team, clearing all members                                 |
-| `renameTeam(name, newDisplayName)`         | `Boolean`  | Updates the display name; returns `false` if the team does not exist     |
-| `getTeam(name)`                            | `Team?`    | Returns the team, or `null` if it does not exist                         |
-| `getAllTeams()`                             | `List<Team>` | Returns every existing team                                             |
-| `hasTeam(name)`                            | `Boolean`  | Returns `true` if the team exists                                        |
+| Method                             | Return       | Description                                                          |
+|:-----------------------------------|:-------------|:---------------------------------------------------------------------|
+| `createTeam(name, displayName)`    | `Boolean`    | Creates a team; returns `false` if the name is already taken         |
+| `deleteTeam(name)`                 | `Boolean`    | Deletes a team and all its members; returns `false` if not found     |
+| `deleteAll()`                      | `Unit`       | Deletes every team, clearing all members                             |
+| `renameTeam(name, newDisplayName)` | `Boolean`    | Updates the display name; returns `false` if the team does not exist |
+| `getTeam(name)`                    | `Team?`      | Returns the team, or `null` if it does not exist                     |
+| `getAllTeams()`                    | `List<Team>` | Returns every existing team                                          |
+| `hasTeam(name)`                    | `Boolean`    | Returns `true` if the team exists                                    |
 
 All name lookups are **case-insensitive**. The stored key is always lowercase.
 
 ### Player Membership Methods
 
-| Method                             | Return    | Description                                                                                                         |
-|:-----------------------------------|:----------|:--------------------------------------------------------------------------------------------------------------------|
-| `addPlayer(player, teamName)`      | `Boolean` | Adds the player to a team, auto-removing from any current team; returns `false` if team not found or player already in it |
-| `removePlayer(player)`             | `Boolean` | Removes the player from their current team; returns `false` if not in any team                                      |
-| `getPlayerTeam(player)`            | `Team?`   | Returns the player's team, or `null`                                                                                |
-| `isInTeam(player, teamName)`       | `Boolean` | Returns `true` if the player is a member of the named team                                                          |
-| `areTeammates(playerA, playerB)`   | `Boolean` | Returns `true` if both players are in the same team; `false` if either is not in any team                          |
-| `broadcastAll(message)`            | `Unit`    | Sends a MiniMessage string to all online members across every team                                                  |
+| Method                           | Return    | Description                                                                                                               |
+|:---------------------------------|:----------|:--------------------------------------------------------------------------------------------------------------------------|
+| `addPlayer(player, teamName)`    | `Boolean` | Adds the player to a team, auto-removing from any current team; returns `false` if team not found or player already in it |
+| `removePlayer(player)`           | `Boolean` | Removes the player from their current team; returns `false` if not in any team                                            |
+| `getPlayerTeam(player)`          | `Team?`   | Returns the player's team, or `null`                                                                                      |
+| `isInTeam(player, teamName)`     | `Boolean` | Returns `true` if the player is a member of the named team                                                                |
+| `areTeammates(playerA, playerB)` | `Boolean` | Returns `true` if both players are in the same team; `false` if either is not in any team                                 |
+| `broadcastAll(message)`          | `Unit`    | Sends a MiniMessage string to all online members across every team                                                        |
 
 ### Team Instance Methods
 
 Once you have a `Team` reference (from `getTeam` or `getPlayerTeam`), you can
 use these methods directly on it:
 
-| Method                    | Return          | Description                                              |
-|:--------------------------|:----------------|:---------------------------------------------------------|
-| `getMembers()`            | `Set<UUID>`     | Immutable snapshot of all member UUIDs                   |
-| `getOnlineMembers()`      | `List<Player>`  | All online members as `Player` instances                 |
-| `contains(player)`        | `Boolean`       | Whether the player is in the team                        |
-| `contains(uuid)`          | `Boolean`       | Whether the UUID belongs to a team member                |
-| `broadcast(message)`      | `Unit`          | Sends a MiniMessage string to all online members         |
-| `memberCount`             | `Int` (property)| Total number of members (online and offline)             |
-| `displayName`             | `String` (property) | MiniMessage display name; mutable via `renameTeam`   |
+| Method               | Return              | Description                                        |
+|:---------------------|:--------------------|:---------------------------------------------------|
+| `getMembers()`       | `Set<UUID>`         | Immutable snapshot of all member UUIDs             |
+| `getOnlineMembers()` | `List<Player>`      | All online members as `Player` instances           |
+| `contains(player)`   | `Boolean`           | Whether the player is in the team                  |
+| `contains(uuid)`     | `Boolean`           | Whether the UUID belongs to a team member          |
+| `broadcast(message)` | `Unit`              | Sends a MiniMessage string to all online members   |
+| `memberCount`        | `Int` (property)    | Total number of members (online and offline)       |
+| `displayName`        | `String` (property) | MiniMessage display name; mutable via `renameTeam` |
 
 ### Cache
 
@@ -325,13 +325,13 @@ TagUtil.clearTags(player)
 
 ### Methods
 
-| Method                       | Return      | Description                                                             |
-|:-----------------------------|:------------|:------------------------------------------------------------------------|
-| `addTag(player, tag)`        | `Boolean`   | Adds the tag; returns `false` if the player already has it              |
-| `removeTag(player, tag)`     | `Boolean`   | Removes the tag; returns `false` if the player did not have it          |
-| `hasTag(player, tag)`        | `Boolean`   | Returns `true` if the player currently has the tag                      |
-| `getTags(player)`            | `Set<String>` | Returns an immutable snapshot of all tags assigned to the player      |
-| `clearTags(player)`          | `Unit`      | Removes all tags from the player                                        |
+| Method                   | Return        | Description                                                      |
+|:-------------------------|:--------------|:-----------------------------------------------------------------|
+| `addTag(player, tag)`    | `Boolean`     | Adds the tag; returns `false` if the player already has it       |
+| `removeTag(player, tag)` | `Boolean`     | Removes the tag; returns `false` if the player did not have it   |
+| `hasTag(player, tag)`    | `Boolean`     | Returns `true` if the player currently has the tag               |
+| `getTags(player)`        | `Set<String>` | Returns an immutable snapshot of all tags assigned to the player |
+| `clearTags(player)`      | `Unit`        | Removes all tags from the player                                 |
 
 Tags are **case-sensitive** — `"VIP"` and `"vip"` are treated as distinct values.
 
@@ -399,13 +399,13 @@ player.sendPrefixed(Component.text("Hello!", NamedTextColor.GREEN))
 
 ### Methods
 
-| Method / Extension                       | Description                                                         |
-|:-----------------------------------------|:--------------------------------------------------------------------|
-| `MessageUtil.init(prefixString)`         | Loads the prefix (plain text or MiniMessage). Called automatically at startup and on reload. |
-| `MessageUtil.sendPrefixed(player, msg: String)` | Sends a plain-text or MiniMessage string with the prefix prepended. |
-| `MessageUtil.sendPrefixed(player, msg: Component)` | Sends an Adventure `Component` with the prefix prepended. |
-| `Player.sendPrefixed(msg: String)`       | Extension shorthand for `MessageUtil.sendPrefixed(this, msg)`. |
-| `Player.sendPrefixed(msg: Component)`    | Extension shorthand for `MessageUtil.sendPrefixed(this, msg)`. |
+| Method / Extension                                 | Description                                                                                  |
+|:---------------------------------------------------|:---------------------------------------------------------------------------------------------|
+| `MessageUtil.init(prefixString)`                   | Loads the prefix (plain text or MiniMessage). Called automatically at startup and on reload. |
+| `MessageUtil.sendPrefixed(player, msg: String)`    | Sends a plain-text or MiniMessage string with the prefix prepended.                          |
+| `MessageUtil.sendPrefixed(player, msg: Component)` | Sends an Adventure `Component` with the prefix prepended.                                    |
+| `Player.sendPrefixed(msg: String)`                 | Extension shorthand for `MessageUtil.sendPrefixed(this, msg)`.                               |
+| `Player.sendPrefixed(msg: Component)`              | Extension shorthand for `MessageUtil.sendPrefixed(this, msg)`.                               |
 
 ### Example (Listener)
 

@@ -1265,16 +1265,16 @@ data.set("kills", kills + 1)
 
 ### Typed Getters and Setters
 
-| Method          | Signature                          | Description                                                          |
-|:----------------|:-----------------------------------|:---------------------------------------------------------------------|
-| `getString`     | `getString(key, default = "")`     | Returns a `String` value                                             |
-| `getInt`        | `getInt(key, default = 0)`         | Returns an `Int` value                                               |
-| `getDouble`     | `getDouble(key, default = 0.0)`    | Returns a `Double` value                                             |
-| `getBoolean`    | `getBoolean(key, default = false)` | Returns a `Boolean` value                                            |
-| `getJsonArray`  | `getJsonArray(key)`                | Returns a `JsonArray` value, or an empty `JsonArray` when absent     |
-| `set`           | `set(key, value)`                  | Stores a `String`, `Int`, `Double`, `Boolean`, `JsonArray`, or `JsonObject` |
-| `remove`        | `remove(key)`                      | Removes the entry at `key`                                           |
-| `has`           | `has(key)`                         | Returns `true` when `key` exists                                     |
+| Method         | Signature                          | Description                                                                 |
+|:---------------|:-----------------------------------|:----------------------------------------------------------------------------|
+| `getString`    | `getString(key, default = "")`     | Returns a `String` value                                                    |
+| `getInt`       | `getInt(key, default = 0)`         | Returns an `Int` value                                                      |
+| `getDouble`    | `getDouble(key, default = 0.0)`    | Returns a `Double` value                                                    |
+| `getBoolean`   | `getBoolean(key, default = false)` | Returns a `Boolean` value                                                   |
+| `getJsonArray` | `getJsonArray(key)`                | Returns a `JsonArray` value, or an empty `JsonArray` when absent            |
+| `set`          | `set(key, value)`                  | Stores a `String`, `Int`, `Double`, `Boolean`, `JsonArray`, or `JsonObject` |
+| `remove`       | `remove(key)`                      | Removes the entry at `key`                                                  |
+| `has`          | `has(key)`                         | Returns `true` when `key` exists                                            |
 
 ### Custom Subclass
 
@@ -1361,16 +1361,16 @@ data.set("eventCount", events + 1)
 
 `ServerData` exposes the same typed methods as `PlayerData`:
 
-| Method          | Signature                          | Description                                                          |
-|:----------------|:-----------------------------------|:---------------------------------------------------------------------|
-| `getString`     | `getString(key, default = "")`     | Returns a `String` value                                             |
-| `getInt`        | `getInt(key, default = 0)`         | Returns an `Int` value                                               |
-| `getDouble`     | `getDouble(key, default = 0.0)`    | Returns a `Double` value                                             |
-| `getBoolean`    | `getBoolean(key, default = false)` | Returns a `Boolean` value                                            |
-| `getJsonArray`  | `getJsonArray(key)`                | Returns a `JsonArray` value, or an empty `JsonArray` when absent     |
-| `set`           | `set(key, value)`                  | Stores a `String`, `Int`, `Double`, `Boolean`, `JsonArray`, or `JsonObject` |
-| `remove`        | `remove(key)`                      | Removes the entry at `key`                                           |
-| `has`           | `has(key)`                         | Returns `true` when `key` exists                                     |
+| Method         | Signature                          | Description                                                                 |
+|:---------------|:-----------------------------------|:----------------------------------------------------------------------------|
+| `getString`    | `getString(key, default = "")`     | Returns a `String` value                                                    |
+| `getInt`       | `getInt(key, default = 0)`         | Returns an `Int` value                                                      |
+| `getDouble`    | `getDouble(key, default = 0.0)`    | Returns a `Double` value                                                    |
+| `getBoolean`   | `getBoolean(key, default = false)` | Returns a `Boolean` value                                                   |
+| `getJsonArray` | `getJsonArray(key)`                | Returns a `JsonArray` value, or an empty `JsonArray` when absent            |
+| `set`          | `set(key, value)`                  | Stores a `String`, `Int`, `Double`, `Boolean`, `JsonArray`, or `JsonObject` |
+| `remove`       | `remove(key)`                      | Removes the entry at `key`                                                  |
+| `has`          | `has(key)`                         | Returns `true` when `key` exists                                            |
 
 ### Custom Subclass
 
