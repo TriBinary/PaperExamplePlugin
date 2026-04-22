@@ -2,6 +2,7 @@ package com.example.exampleplugin.utils
 
 import com.example.exampleplugin.utils.MessageUtil.init
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 
@@ -67,7 +68,11 @@ object MessageUtil {
     }
 
     private fun build(message: Component): Component =
-        prefixComponent.append(Component.space()).append(message)
+        Component.text()
+            .append(prefixComponent)
+            .append(Component.space())
+            .append(message)
+            .build()
 }
 
 /**
