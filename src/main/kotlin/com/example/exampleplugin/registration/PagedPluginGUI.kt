@@ -163,7 +163,10 @@ abstract class PagedPluginGUI(
 
         // Navigation row – fill all slots with gray stained glass panes first
         for (offset in 0 until ROW_SIZE) {
-            inventory.setItem(navRowStart + offset, createNavItem(Material.GRAY_STAINED_GLASS_PANE, Component.empty()))
+            inventory.setItem(navRowStart + offset, itemStack(Material.GRAY_STAINED_GLASS_PANE) {
+                name(" ")
+                hideTooltip(true)
+            })
         }
 
         // Place navigation items on top of the filler
@@ -171,7 +174,7 @@ abstract class PagedPluginGUI(
             inventory.setItem(
                 navRowStart + PREVIOUS_OFFSET, createNavItem(
                     Material.ARROW,
-                    Component.text("Previous Page", NamedTextColor.YELLOW)
+                    "<yellow>Previous Page"
                 )
             )
         }
@@ -179,7 +182,7 @@ abstract class PagedPluginGUI(
         inventory.setItem(
             navRowStart + PAGE_INDICATOR_OFFSET, createNavItem(
                 Material.PAPER,
-                Component.text("Page ${page + 1}/$totalPages", NamedTextColor.WHITE)
+                "<white>Page ${page + 1}/$totalPages"
             )
         )
 
@@ -187,18 +190,17 @@ abstract class PagedPluginGUI(
             inventory.setItem(
                 navRowStart + NEXT_OFFSET, createNavItem(
                     Material.ARROW,
-                    Component.text("Next Page", NamedTextColor.YELLOW)
+                    "<yellow>Next Page"
                 )
             )
         }
     }
 
     /** Creates a navigation item with the given material and display name. */
-    private fun createNavItem(material: Material, name: Component): ItemStack {
-        val item = ItemStack(material)
-        val meta = item.itemMeta
-        meta.displayName(name)
-        item.itemMeta = meta
+    private fun createNavItem(material: Material, name: String): ItemStack {
+        val item = itemStack(material) {
+            this.name(name)
+        }
         return item
     }
 
