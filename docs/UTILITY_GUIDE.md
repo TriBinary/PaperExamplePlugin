@@ -8,6 +8,7 @@ reduce boilerplate and provide commonly needed functionality out of the box.
 | `itemStack`     | DSL builder for creating `ItemStack` instances concisely |
 | `CountdownUtil` | Per-player countdown with configurable display and sound |
 | `TeamUtil`      | Custom team management with server-data persistence      |
+| `TagUtil`       | Per-player string tag management with player-data persistence |
 
 ---
 
@@ -288,6 +289,69 @@ fun setupGame(players: List<Player>) {
 fun endGame() {
     TeamUtil.broadcastAll("<green>The game has ended. Thanks for playing!")
     TeamUtil.deleteAll()
+}
+```
+
+---
+
+## TagUtil
+
+`TagUtil` manages an arbitrary set of string tags for each player. Tag data is
+stored inside each player's individual [`PlayerDataManager`](DEVELOPER_GUIDE.md#player-data)
+file under the key `"tags"`, so tags are automatically loaded when the player
+joins and saved when they quit — no explicit setup is required.
+
+### Usage
+
+```kotlin
+import com.example.exampleplugin.utils.TagUtil
+
+// Add a tag (returns false if the player already has it)
+TagUtil.addTag(player, "vip")
+
+// Check if a player has a tag
+val isVip = TagUtil.hasTag(player, "vip")
+
+// Get all tags assigned to a player
+val tags = TagUtil.getTags(player)
+
+// Remove a specific tag (returns false if the player did not have it)
+TagUtil.removeTag(player, "vip")
+
+// Remove all tags from a player
+TagUtil.clearTags(player)
+```
+
+### Methods
+
+| Method                       | Return      | Description                                                             |
+|:-----------------------------|:------------|:------------------------------------------------------------------------|
+| `addTag(player, tag)`        | `Boolean`   | Adds the tag; returns `false` if the player already has it              |
+| `removeTag(player, tag)`     | `Boolean`   | Removes the tag; returns `false` if the player did not have it          |
+| `hasTag(player, tag)`        | `Boolean`   | Returns `true` if the player currently has the tag                      |
+| `getTags(player)`            | `Set<String>` | Returns an immutable snapshot of all tags assigned to the player      |
+| `clearTags(player)`          | `Unit`      | Removes all tags from the player                                        |
+
+Tags are **case-sensitive** — `"VIP"` and `"vip"` are treated as distinct values.
+
+### Persistence
+
+Tags are written into the player's `PlayerData` JSON on every mutating call.
+They are flushed to disk when the player quits or when `PlayerDataManager.saveAll()`
+is called during `JavaPlugin.onDisable`. No extra save call is needed.
+
+### Example (Permission Gate)
+
+```kotlin
+import com.example.exampleplugin.utils.TagUtil
+import org.bukkit.entity.Player
+
+fun onEnterVipArea(player: Player) {
+    if (!TagUtil.hasTag(player, "vip")) {
+        player.sendMessage("<red>You need VIP access to enter this area.")
+        return
+    }
+    player.sendMessage("<gold>Welcome to the VIP area!")
 }
 ```
 
