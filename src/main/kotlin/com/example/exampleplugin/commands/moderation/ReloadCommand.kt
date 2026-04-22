@@ -32,7 +32,12 @@ class ReloadCommand(private val plugin: JavaPlugin) : PluginCommand(
         }
         main.pluginConfig.reload()
         MessageUtil.init(main.pluginConfig.messagePrefix)
-        sender.sendMessage("Configuration reloaded!")
+        if (sender is Player) {
+            val player = sender as Player
+            player.sendPrefixed("Configuration reloaded!")
+        } else {
+            sender.sendMessage("Configuration reloaded!")
+        }
         return true
     }
 }
