@@ -7,6 +7,7 @@ import com.example.exampleplugin.registration.CommandRegistrar
 import com.example.exampleplugin.registration.GUIManager
 import com.example.exampleplugin.registration.ListenerRegistrar
 import com.example.exampleplugin.registration.PermissionRegistrar
+import com.example.exampleplugin.registration.TaskRegistrar
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
@@ -34,11 +35,16 @@ class Main : JavaPlugin() {
         ListenerRegistrar.registerAll(this)
         logger.info("Registering GUIs...")
         GUIManager.registerAll(this)
+        logger.info("Registering tasks...")
+        TaskRegistrar.registerAll(this)
 
         logger.info("Plugin enabled!")
     }
 
     override fun onDisable() {
+        // Cancel all scheduled tasks
+        TaskRegistrar.unregisterAll()
+
         // Persist data for any players still online and server-wide data
         PlayerDataManager.saveAll()
         ServerDataManager.save()
