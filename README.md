@@ -3,7 +3,7 @@
 </h1>
 
 A template repository for creating Paper (Minecraft) plugins with Kotlin. It comes with an auto-registration system for
-commands, listeners, permissions, and GUIs — just extend a base class, drop it in the right package, and the plugin
+commands, listeners, permissions, GUIs and tasks — just extend a base class, drop it in the right package, and the plugin
 handles the rest.
 
 ## Getting Started
@@ -33,6 +33,7 @@ src/main/kotlin/com/example/exampleplugin/
 ├── guis/                    # Auto-registered GUIs (extend PluginGUI)
 ├── listeners/               # Auto-registered listeners (implement Listener)
 ├── registration/            # Auto-registration framework
+├── tasks/                   # Auto-registered tasks (extend PluginTask)
 └── utils/                   # Utility helpers (e.g. ItemStack DSL)
 ```
 
