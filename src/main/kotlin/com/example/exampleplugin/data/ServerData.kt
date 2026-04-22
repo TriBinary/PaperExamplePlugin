@@ -1,5 +1,6 @@
 package com.example.exampleplugin.data
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 
 /**
@@ -55,6 +56,12 @@ open class ServerData {
     fun getBoolean(key: String, default: Boolean = false): Boolean =
         if (json.has(key)) json.get(key).asBoolean else default
 
+    /**
+     * Returns the [JsonArray] stored at [key], or an empty [JsonArray] when absent.
+     */
+    fun getJsonArray(key: String): JsonArray =
+        if (json.has(key) && json.get(key).isJsonArray) json.getAsJsonArray(key) else JsonArray()
+
     // ── Typed Setters ───────────────────────────────────────────────────
 
     /** Stores a [String] value at [key]. */
@@ -75,6 +82,16 @@ open class ServerData {
     /** Stores a [Boolean] value at [key]. */
     fun set(key: String, value: Boolean) {
         json.addProperty(key, value)
+    }
+
+    /** Stores a [JsonArray] value at [key]. */
+    fun set(key: String, value: JsonArray) {
+        json.add(key, value)
+    }
+
+    /** Stores a [JsonObject] value at [key]. */
+    fun set(key: String, value: JsonObject) {
+        json.add(key, value)
     }
 
     // ── Utilities ───────────────────────────────────────────────────────

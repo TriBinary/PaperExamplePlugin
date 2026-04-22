@@ -7,6 +7,7 @@ reduce boilerplate and provide commonly needed functionality out of the box.
 |:----------------|:---------------------------------------------------------|
 | `itemStack`     | DSL builder for creating `ItemStack` instances concisely |
 | `CountdownUtil` | Per-player countdown with configurable display and sound |
+| `TeamUtil`      | Custom team management with server-data persistence      |
 
 ---
 
@@ -172,6 +173,113 @@ CountdownUtil().start(
     finishMessage = "<green>Time's up!",
     onFinish = { p -> p.sendMessage("Round over!") }
 )
+```
+
+---
+
+## TeamUtil
+
+`TeamUtil` manages custom teams with persistent, server-wide state backed by
+[`ServerDataManager`](DEVELOPER_GUIDE.md#server-data). Each player may belong
+to **at most one team** at a time — calling `joinTeam` when a player is already
+in another team removes them from that team first. All changes are written into
+the server-data JSON immediately, so they are flushed to disk when
+`ServerDataManager.save()` is called in `JavaPlugin.onDisable`.
+
+### Usage
+
+```kotlin
+import com.example.exampleplugin.utils.TeamUtil
+
+// Create a team (returns false if the name is already taken)
+TeamUtil.createTeam("red", "<red>Red Team")
+TeamUtil.createTeam("blue", "<blue>Blue Team")
+
+// Add a player — automatically removes them from any previous team
+TeamUtil.joinTeam(player, "red")
+
+// Find which team a player is in
+val team = TeamUtil.getPlayerTeam(player)
+
+// Broadcast a MiniMessage string to all online members of a team
+team?.broadcast("<yellow>Get ready to fight!")
+
+// Remove a player from their team
+TeamUtil.leaveTeam(player)
+
+// Delete a team entirely (members are removed along with it)
+TeamUtil.deleteTeam("red")
+```
+
+### Team Management Methods
+
+| Method                                     | Return     | Description                                                              |
+|:-------------------------------------------|:-----------|:-------------------------------------------------------------------------|
+| `createTeam(name, displayName)`            | `Boolean`  | Creates a team; returns `false` if the name is already taken             |
+| `deleteTeam(name)`                         | `Boolean`  | Deletes a team and all its members; returns `false` if not found         |
+| `renameTeam(name, newDisplayName)`         | `Boolean`  | Updates the display name; returns `false` if the team does not exist     |
+| `getTeam(name)`                            | `Team?`    | Returns the team, or `null` if it does not exist                         |
+| `getAllTeams()`                             | `List<Team>` | Returns every existing team                                             |
+| `hasTeam(name)`                            | `Boolean`  | Returns `true` if the team exists                                        |
+
+All name lookups are **case-insensitive**. The stored key is always lowercase.
+
+### Player Membership Methods
+
+| Method                          | Return   | Description                                                                              |
+|:--------------------------------|:---------|:-----------------------------------------------------------------------------------------|
+| `joinTeam(player, teamName)`    | `Boolean` | Adds the player to a team, auto-leaving any current team; returns `false` if team not found or player already in it |
+| `leaveTeam(player)`             | `Boolean` | Removes the player from their current team; returns `false` if not in any team           |
+| `getPlayerTeam(player)`         | `Team?`   | Returns the player's team, or `null`                                                     |
+| `isInTeam(player, teamName)`    | `Boolean` | Returns `true` if the player is a member of the named team                               |
+
+### Team Instance Methods
+
+Once you have a `Team` reference (from `getTeam` or `getPlayerTeam`), you can
+use these methods directly on it:
+
+| Method                    | Return          | Description                                              |
+|:--------------------------|:----------------|:---------------------------------------------------------|
+| `getMembers()`            | `Set<UUID>`     | Immutable snapshot of all member UUIDs                   |
+| `getOnlineMembers()`      | `List<Player>`  | All online members as `Player` instances                 |
+| `contains(player)`        | `Boolean`       | Whether the player is in the team                        |
+| `contains(uuid)`          | `Boolean`       | Whether the UUID belongs to a team member                |
+| `broadcast(message)`      | `Unit`          | Sends a MiniMessage string to all online members         |
+| `memberCount`             | `Int` (property)| Total number of members (online and offline)             |
+| `displayName`             | `String` (property) | MiniMessage display name; mutable via `renameTeam`   |
+
+### Cache
+
+`TeamUtil` loads team data lazily on the first access after plugin startup. If
+you modify the underlying `ServerData` JSON directly (outside of `TeamUtil`),
+call `TeamUtil.invalidateCache()` to force a fresh load on the next access.
+
+### Example (Game Setup)
+
+```kotlin
+import com.example.exampleplugin.utils.TeamUtil
+import org.bukkit.entity.Player
+
+fun setupGame(players: List<Player>) {
+    TeamUtil.createTeam("red", "<red><bold>Red")
+    TeamUtil.createTeam("blue", "<blue><bold>Blue")
+
+    players.forEachIndexed { index, player ->
+        val teamName = if (index % 2 == 0) "red" else "blue"
+        TeamUtil.joinTeam(player, teamName)
+    }
+
+    TeamUtil.getTeam("red")?.broadcast("<red>You are on the Red Team!")
+    TeamUtil.getTeam("blue")?.broadcast("<blue>You are on the Blue Team!")
+}
+
+fun endGame() {
+    for (team in TeamUtil.getAllTeams()) {
+        team.broadcast("<green>The game has ended. Thanks for playing!")
+    }
+    TeamUtil.deleteTeam("red")
+    TeamUtil.deleteTeam("blue")
+}
 ```
 
 ---
