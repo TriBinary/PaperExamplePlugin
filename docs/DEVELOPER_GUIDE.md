@@ -312,7 +312,7 @@ GUIManager.open(player, "settings")
 ```kotlin
 package com.example.exampleplugin.guis
 
-import com.example.exampleplugin.registration.FillMode
+import com.example.exampleplugin.enums.FillMode
 import com.example.exampleplugin.registration.PluginGUI
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -1099,8 +1099,29 @@ player.sendPlayerListHeaderAndFooter(Component.empty(), Component.empty())
 ## Utilities
 
 The `utils` package (`com.example.exampleplugin.utils`) contains helper classes and functions that reduce
-boilerplate across the plugin. See the [Utility Guide](UTILITY_GUIDE.md) for full documentation, including the
-`itemStack` DSL builder, `CountdownHelper`, and `DisplayLocation`.
+boilerplate across the plugin. See the [Utility Guide](UTILITY_GUIDE.md) for full documentation on the
+`itemStack` DSL builder and `CountdownHelper`.
+
+### Enums
+
+Plugin-wide enums live in `com.example.exampleplugin.enums`.
+
+#### DisplayLocation
+
+`DisplayLocation` is used by `CountdownHelper` to control where countdown messages are rendered for the player.
+
+| Value        | Behaviour                                              |
+|:-------------|:-------------------------------------------------------|
+| `NONE`       | No message is displayed                                |
+| `CHAT`       | Message is sent to the player's chat                   |
+| `TITLE`      | Message is shown as a screen title                     |
+| `BOSS_BAR`   | Message is shown in a boss bar that depletes over time |
+| `ACTION_BAR` | Message is shown above the hotbar                      |
+
+#### FillMode
+
+`FillMode` is used by `PluginGUI` and `PagedPluginGUI` to control how empty inventory slots are pre-filled before
+`setup` is called. See the [GUIs section](#guis) for details.
 
 ---
 
