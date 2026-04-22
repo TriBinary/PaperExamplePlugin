@@ -171,6 +171,13 @@ object CommandRegistrar {
         val subName = args[0].lowercase()
         val subCommand = subCommands[subName]
         if (subCommand == null) {
+            if (sender is Player) {
+                val player = sender as Player
+                player.sendPrefixed("Unknown sub-command: ${args[0]}")
+                player.sendPrefixed(
+                    "Available sub-commands: ${subCommands.keys.sorted().joinToString(", ")}"
+                )
+            }
             sender.sendMessage("Unknown sub-command: ${args[0]}")
             sender.sendMessage(
                 "Available sub-commands: ${subCommands.keys.sorted().joinToString(", ")}"
