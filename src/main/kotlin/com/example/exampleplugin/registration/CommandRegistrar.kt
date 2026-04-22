@@ -154,9 +154,8 @@ object CommandRegistrar {
     private fun executeParentCommand(sender: CommandSender, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
             if (sender is Player) {
-                val player = sender as Player
-                player.sendPrefixed("Usage: /$ROOT_COMMAND <subcommand>")
-                player.sendPrefixed(
+                sender.sendPrefixed("Usage: /$ROOT_COMMAND <subcommand>")
+                sender.sendPrefixed(
                     "Available sub-commands: ${subCommands.keys.sorted().joinToString(", ")}"
                 )
             } else {
@@ -172,9 +171,8 @@ object CommandRegistrar {
         val subCommand = subCommands[subName]
         if (subCommand == null) {
             if (sender is Player) {
-                val player = sender as Player
-                player.sendPrefixed("Unknown sub-command: ${args[0]}")
-                player.sendPrefixed(
+                sender.sendPrefixed("Unknown sub-command: ${args[0]}")
+                sender.sendPrefixed(
                     "Available sub-commands: ${subCommands.keys.sorted().joinToString(", ")}"
                 )
             }
