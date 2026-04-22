@@ -388,11 +388,12 @@ For example, a 6-row GUI provides 45 content slots per page (rows 1–5).
 
 `PagedPluginGUI` inherits all properties from `PluginGUI`:
 
-| Property | Type        | Default      | Description                              |
-|:---------|:------------|:-------------|:-----------------------------------------|
-| `id`     | `String`    | *(required)* | Unique identifier used to open the GUI   |
-| `title`  | `Component` | *(required)* | Title displayed at the top of the chest  |
-| `rows`   | `Int`       | `6`          | Number of rows (2–6, each row = 9 slots) |
+| Property   | Type        | Default         | Description                                                                        |
+|:-----------|:------------|:----------------|:-----------------------------------------------------------------------------------|
+| `id`       | `String`    | *(required)*    | Unique identifier used to open the GUI                                             |
+| `title`    | `Component` | *(required)*    | Title displayed at the top of the chest                                            |
+| `rows`     | `Int`       | `6`             | Number of rows (2–6, each row = 9 slots)                                           |
+| `fillMode` | `FillMode`  | `FillMode.NONE` | Controls background filler; re-applied on every page render, not just initial open |
 
 ### Methods to Override
 
