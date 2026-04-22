@@ -2,10 +2,10 @@ package com.example.exampleplugin.utils
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
-import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 /**
- * Utility for sending prefix-decorated messages to players and command senders.
+ * Utility for sending prefix-decorated messages to players.
  *
  * Call [init] once during plugin startup (and again after a config reload) to
  * load the configured prefix. The prefix string may be plain text or a
@@ -44,25 +44,25 @@ object MessageUtil {
     }
 
     /**
-     * Sends [message] to [sender] with the configured prefix prepended.
+     * Sends [message] to [player] with the configured prefix prepended.
      *
      * [message] may be a plain text string or a MiniMessage-formatted string.
      *
-     * @param sender  the recipient
+     * @param player  the recipient
      * @param message the message string (plain text or MiniMessage-formatted)
      */
-    fun sendPrefixed(sender: CommandSender, message: String) {
-        sender.sendMessage(build(mm.deserialize(message)))
+    fun sendPrefixed(player: Player, message: String) {
+        player.sendMessage(build(mm.deserialize(message)))
     }
 
     /**
-     * Sends [message] to [sender] with the configured prefix prepended.
+     * Sends [message] to [player] with the configured prefix prepended.
      *
-     * @param sender  the recipient
+     * @param player  the recipient
      * @param message the [Component] to send
      */
-    fun sendPrefixed(sender: CommandSender, message: Component) {
-        sender.sendMessage(build(message))
+    fun sendPrefixed(player: Player, message: Component) {
+        player.sendMessage(build(message))
     }
 
     private fun build(message: Component): Component =
@@ -70,19 +70,19 @@ object MessageUtil {
 }
 
 /**
- * Sends [message] to this sender with the plugin prefix prepended.
+ * Sends [message] to this player with the plugin prefix prepended.
  *
  * [message] may be a plain text string or a MiniMessage-formatted string.
  *
- * @receiver the message recipient
+ * @receiver the target player
  * @param message the message string (plain text or MiniMessage-formatted)
  */
-fun CommandSender.sendPrefixed(message: String) = MessageUtil.sendPrefixed(this, message)
+fun Player.sendPrefixed(message: String) = MessageUtil.sendPrefixed(this, message)
 
 /**
- * Sends [message] to this sender with the plugin prefix prepended.
+ * Sends [message] to this player with the plugin prefix prepended.
  *
- * @receiver the message recipient
+ * @receiver the target player
  * @param message the [Component] to send
  */
-fun CommandSender.sendPrefixed(message: Component) = MessageUtil.sendPrefixed(this, message)
+fun Player.sendPrefixed(message: Component) = MessageUtil.sendPrefixed(this, message)

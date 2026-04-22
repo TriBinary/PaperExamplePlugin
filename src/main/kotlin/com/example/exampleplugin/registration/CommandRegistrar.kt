@@ -1,6 +1,5 @@
 package com.example.exampleplugin.registration
 
-import com.example.exampleplugin.utils.sendPrefixed
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandMap
@@ -152,8 +151,8 @@ object CommandRegistrar {
 
     private fun executeParentCommand(sender: CommandSender, args: Array<out String>): Boolean {
         if (args.isEmpty()) {
-            sender.sendPrefixed("Usage: /$ROOT_COMMAND <subcommand>")
-            sender.sendPrefixed(
+            sender.sendMessage("Usage: /$ROOT_COMMAND <subcommand>")
+            sender.sendMessage(
                 "Available sub-commands: ${subCommands.keys.sorted().joinToString(", ")}"
             )
             return true
@@ -162,8 +161,8 @@ object CommandRegistrar {
         val subName = args[0].lowercase()
         val subCommand = subCommands[subName]
         if (subCommand == null) {
-            sender.sendPrefixed("Unknown sub-command: ${args[0]}")
-            sender.sendPrefixed(
+            sender.sendMessage("Unknown sub-command: ${args[0]}")
+            sender.sendMessage(
                 "Available sub-commands: ${subCommands.keys.sorted().joinToString(", ")}"
             )
             return true
@@ -171,7 +170,7 @@ object CommandRegistrar {
 
         subCommand.permission?.let { perm ->
             if (!sender.hasPermission(perm)) {
-                sender.sendPrefixed("You do not have permission to use this command.")
+                sender.sendMessage("You do not have permission to use this command.")
                 return true
             }
         }
