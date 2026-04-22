@@ -14,8 +14,8 @@ import java.time.Duration
  *
  * ### Message placeholders
  *
- * The [start] `message` parameter is a MiniMessage string that may contain the
- * following placeholders, which are replaced on every tick:
+ * Both [start] `message` and `finishMessage` are MiniMessage strings that may
+ * contain the following placeholders:
  *
  * | Placeholder  | Output example                          |
  * |:-------------|:----------------------------------------|
@@ -26,21 +26,28 @@ import java.time.Duration
  *
  * ### Optional parameters
  *
- * Pass `null` for [sound] or [finishSound] to play no sound at that point.
- * Set [displayLocation] to [DisplayLocation.NONE] to suppress the message
- * entirely.
+ * * Omit (or pass `null` for) `message` to skip the per-tick display.
+ * * Omit (or pass `null` for) `finishMessage` to skip the finish display.
+ * * Pass `null` for `sound` or `finishSound` to play no sound at that point.
+ * * Set `displayLocation` to [DisplayLocation.NONE] to suppress all output.
+ *
+ * ### Boss bar color
+ *
+ * When `displayLocation` is [DisplayLocation.BOSS_BAR], pass `bossBarColor`
+ * to choose the bar color (defaults to [BossBar.Color.BLUE]).
  *
  * ### Example usage
  * ```kotlin
  * CountdownHelper().start(
- *     plugin        = plugin,
- *     player        = player,
- *     seconds       = 10,
- *     message       = "<yellow>Starting in <bold>{seconds}</bold> (<gray>{time}</gray>)",
+ *     plugin          = plugin,
+ *     player          = player,
+ *     seconds         = 10,
  *     displayLocation = DisplayLocation.ACTION_BAR,
- *     sound         = Sound.sound(Key.key("minecraft:ui.button.click"), Sound.Source.MASTER, 1f, 1f),
- *     finishSound   = Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 1f, 1f),
- *     onFinish      = { p -> p.sendMessage("<green>Go!") }
+ *     message         = "<yellow>Starting in <bold>{seconds}</bold> (<gray>{time}</gray>)",
+ *     finishMessage   = "<green>Go!",
+ *     sound           = Sound.sound(Key.key("minecraft:ui.button.click"), Sound.Source.MASTER, 1f, 1f),
+ *     finishSound     = Sound.sound(Key.key("minecraft:entity.player.levelup"), Sound.Source.MASTER, 1f, 1f),
+ *     onFinish        = { p -> p.sendMessage("<green>Started!") }
  * )
  * ```
  */
@@ -54,10 +61,18 @@ class CountdownHelper {
      * @param plugin          the owning plugin (used to schedule tasks)
      * @param player          the player to target
      * @param seconds         total number of seconds to count down from
-     * @param message         MiniMessage string shown each tick; supports
-     *                        `{seconds}` and `{time}` placeholders
-     * @param displayLocation where the message is shown; use
-     *                        [DisplayLocation.NONE] to suppress output
+     * @param displayLocation where messages are shown; use
+     *                        [DisplayLocation.NONE] to suppress all output
+     * @param message         optional MiniMessage string shown on every tick;
+     *                        supports `{seconds}` and `{time}` placeholders.
+     *                        Pass `null` (or omit) to skip per-tick display
+     * @param finishMessage   optional MiniMessage string shown when the
+     *                        countdown ends; supports `{seconds}` and `{time}`
+     *                        placeholders. Pass `null` (or omit) to skip the
+     *                        finish display
+     * @param bossBarColor    color of the boss bar when [displayLocation] is
+     *                        [DisplayLocation.BOSS_BAR]; defaults to
+     *                        [BossBar.Color.BLUE]
      * @param sound           sound played on every tick, or `null` for silence
      * @param finishSound     sound played when the countdown ends, or `null`
      *                        for silence
@@ -68,21 +83,24 @@ class CountdownHelper {
         plugin: JavaPlugin,
         player: Player,
         seconds: Int,
-        message: String,
         displayLocation: DisplayLocation,
-        sound: Sound?,
-        finishSound: Sound?,
+        message: String? = null,
+        finishMessage: String? = null,
+        bossBarColor: BossBar.Color = BossBar.Color.BLUE,
+        sound: Sound? = null,
+        finishSound: Sound? = null,
         onFinish: (Player) -> Unit
     ) {
         require(seconds > 0) { "seconds must be greater than 0" }
 
         var remaining = seconds
 
+        val initialName = message?.let { applyPlaceholders(it, remaining, seconds) } ?: ""
         val bossBar: BossBar? = if (displayLocation == DisplayLocation.BOSS_BAR) {
             BossBar.bossBar(
-                mm.deserialize(applyPlaceholders(message, remaining, seconds)),
+                mm.deserialize(initialName),
                 1.0f,
-                BossBar.Color.BLUE,
+                bossBarColor,
                 BossBar.Overlay.PROGRESS
             ).also { player.showBossBar(it) }
         } else null
@@ -96,6 +114,10 @@ class CountdownHelper {
             }
 
             if (remaining <= 0) {
+                if (finishMessage != null) {
+                    val formatted = applyPlaceholders(finishMessage, 0, seconds)
+                    showMessage(player, displayLocation, formatted, bossBar, progress = 0.0f)
+                }
                 bossBar?.let { player.hideBossBar(it) }
                 finishSound?.let { player.playSound(it) }
                 task?.cancel()
@@ -103,32 +125,56 @@ class CountdownHelper {
                 return@Runnable
             }
 
-            val formatted = applyPlaceholders(message, remaining, seconds)
-
-            when (displayLocation) {
-                DisplayLocation.NONE -> {}
-                DisplayLocation.CHAT -> player.sendMessage(mm.deserialize(formatted))
-                DisplayLocation.TITLE -> player.showTitle(
-                    Title.title(
-                        mm.deserialize(formatted),
-                        mm.deserialize(""),
-                        Title.Times.times(
-                            Duration.ZERO,
-                            Duration.ofMillis(1200),
-                            Duration.ZERO
-                        )
-                    )
-                )
-                DisplayLocation.BOSS_BAR -> bossBar?.let {
-                    it.name(mm.deserialize(formatted))
-                    it.progress(remaining.toFloat() / seconds.toFloat())
-                }
-                DisplayLocation.ACTION_BAR -> player.sendActionBar(mm.deserialize(formatted))
+            if (message != null) {
+                val formatted = applyPlaceholders(message, remaining, seconds)
+                showMessage(player, displayLocation, formatted, bossBar, remaining.toFloat() / seconds.toFloat())
             }
 
             sound?.let { player.playSound(it) }
             remaining--
         }, 0L, 20L)
+    }
+
+    /**
+     * Sends [formatted] to [player] at the given [displayLocation].
+     *
+     * For [DisplayLocation.BOSS_BAR] the supplied [bossBar] instance is
+     * updated in-place rather than sending a new message.
+     *
+     * @param player          the target player
+     * @param displayLocation where the message is rendered
+     * @param formatted       the already-substituted MiniMessage string
+     * @param bossBar         the active boss bar (only used for
+     *                        [DisplayLocation.BOSS_BAR])
+     * @param progress        boss bar fill fraction in the range `[0, 1]`
+     */
+    private fun showMessage(
+        player: Player,
+        displayLocation: DisplayLocation,
+        formatted: String,
+        bossBar: BossBar?,
+        progress: Float
+    ) {
+        when (displayLocation) {
+            DisplayLocation.NONE -> {}
+            DisplayLocation.CHAT -> player.sendMessage(mm.deserialize(formatted))
+            DisplayLocation.TITLE -> player.showTitle(
+                Title.title(
+                    mm.deserialize(formatted),
+                    mm.deserialize(""),
+                    Title.Times.times(
+                        Duration.ZERO,
+                        Duration.ofMillis(1200),
+                        Duration.ZERO
+                    )
+                )
+            )
+            DisplayLocation.BOSS_BAR -> bossBar?.let {
+                it.name(mm.deserialize(formatted))
+                it.progress(progress)
+            }
+            DisplayLocation.ACTION_BAR -> player.sendActionBar(mm.deserialize(formatted))
+        }
     }
 
     /**
@@ -153,7 +199,7 @@ class CountdownHelper {
      * - `90`   → `1m 30s`
      * - `3665` → `1h 1m 5s`
      *
-     * @param seconds the number of seconds to format (must be ≥ 0)
+     * @param seconds the number of seconds to format (must be >= 0)
      * @return formatted time string
      */
     private fun formatTime(seconds: Int): String {
