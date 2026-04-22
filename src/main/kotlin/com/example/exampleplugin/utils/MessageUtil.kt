@@ -2,7 +2,6 @@ package com.example.exampleplugin.utils
 
 import com.example.exampleplugin.utils.MessageUtil.init
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 
