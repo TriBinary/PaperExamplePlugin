@@ -76,7 +76,7 @@ object PDCUtil {
      * @param type   the [PersistentDataType] describing how the value is stored
      * @param value  the value to store
      */
-    fun <P, C : Any> set(holder: PersistentDataHolder, key: NamespacedKey, type: PersistentDataType<P, C>, value: C) {
+    fun <P : Any, C : Any> set(holder: PersistentDataHolder, key: NamespacedKey, type: PersistentDataType<P, C>, value: C) {
         holder.persistentDataContainer.set(key, type, value)
     }
 
@@ -89,7 +89,7 @@ object PDCUtil {
      * @param type   the [PersistentDataType] expected for the stored value
      * @return the stored value, or `null` if not present
      */
-    fun <P, C : Any> get(holder: PersistentDataHolder, key: NamespacedKey, type: PersistentDataType<P, C>): C? =
+    fun <P : Any, C : Any> get(holder: PersistentDataHolder, key: NamespacedKey, type: PersistentDataType<P, C>): C? =
         holder.persistentDataContainer.get(key, type)
 
     /**
@@ -135,7 +135,7 @@ object PDCUtil {
      * @param type  the [PersistentDataType] describing how the value is stored
      * @param value the value to store
      */
-    fun <P, C : Any> set(item: ItemStack, key: NamespacedKey, type: PersistentDataType<P, C>, value: C) {
+    fun <P : Any, C : Any> set(item: ItemStack, key: NamespacedKey, type: PersistentDataType<P, C>, value: C) {
         val meta = item.itemMeta ?: return
         meta.persistentDataContainer.set(key, type, value)
         item.itemMeta = meta
@@ -151,7 +151,7 @@ object PDCUtil {
      * @param type the [PersistentDataType] expected for the stored value
      * @return the stored value, or `null` if not present
      */
-    fun <P, C : Any> get(item: ItemStack, key: NamespacedKey, type: PersistentDataType<P, C>): C? =
+    fun <P : Any, C : Any> get(item: ItemStack, key: NamespacedKey, type: PersistentDataType<P, C>): C? =
         item.itemMeta?.persistentDataContainer?.get(key, type)
 
     /**
