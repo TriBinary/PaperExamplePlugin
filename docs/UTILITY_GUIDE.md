@@ -3,13 +3,13 @@
 This guide covers the utility helpers provided in `com.example.exampleplugin.utils`. Each utility is designed to
 reduce boilerplate and provide commonly needed functionality out of the box.
 
-| Utility         | Description                                                   |
-|:----------------|:--------------------------------------------------------------|
-| `itemStack`     | DSL builder for creating `ItemStack` instances concisely      |
-| `CountdownUtil` | Per-player countdown with configurable display and sound      |
-| `TeamUtil`      | Custom team management with server-data persistence           |
-| `TagUtil`       | Per-player string tag management with player-data persistence |
-| `MessageUtil`   | Prefix-decorated message sender for players                   |
+| Utility         | Description                                                        |
+|:----------------|:-------------------------------------------------------------------|
+| `itemStack`     | DSL builder for creating `ItemStack` instances concisely           |
+| `CountdownUtil` | Per-player countdown with configurable display and sound           |
+| `TeamUtil`      | Custom team management with server-data persistence                |
+| `TagUtil`       | Per-player string tag management with player-data persistence      |
+| `MessageUtil`   | Prefix-decorated message sender for players                        |
 | `PDCUtil`       | Persistent data container helpers for Entity, Chunk, and ItemStack |
 
 ---
@@ -56,18 +56,18 @@ val item = itemStack(Material.DIAMOND_SWORD) {
 
 ### Builder Methods
 
-| Method            | Signature                                          | Description                                     |
-|:------------------|:---------------------------------------------------|:------------------------------------------------|
-| `name`            | `name(String)`                                     | Set the display name (MiniMessage)              |
-| `lore`            | `lore(vararg String)`                              | Set lore lines (each parsed with MiniMessage)   |
-| `enchant`         | `enchant(Enchantment, Int)`                        | Add an enchantment at the given level           |
-| `unbreakable`     | `unbreakable(Boolean)`                             | Make the item unbreakable                       |
-| `hideTooltip`     | `hideTooltip(Boolean)`                             | Hide the tooltip                                |
-| `amount`          | `amount(Int)`                                      | Set the stack size                              |
-| `flag`            | `flag(vararg ItemFlag)`                            | Add one or more item flags                      |
-| `customModelData` | `customModelData(Int)`                             | Set the custom model data value                 |
-| `pdc`             | `pdc(NamespacedKey, PersistentDataType<P,C>, C)`   | Store a PDC entry on the item (via PDCUtil)     |
-| `meta`            | `meta(ItemMeta.() -> Unit)`                        | Escape hatch for direct `ItemMeta` manipulation |
+| Method            | Signature                                        | Description                                     |
+|:------------------|:-------------------------------------------------|:------------------------------------------------|
+| `name`            | `name(String)`                                   | Set the display name (MiniMessage)              |
+| `lore`            | `lore(vararg String)`                            | Set lore lines (each parsed with MiniMessage)   |
+| `enchant`         | `enchant(Enchantment, Int)`                      | Add an enchantment at the given level           |
+| `unbreakable`     | `unbreakable(Boolean)`                           | Make the item unbreakable                       |
+| `hideTooltip`     | `hideTooltip(Boolean)`                           | Hide the tooltip                                |
+| `amount`          | `amount(Int)`                                    | Set the stack size                              |
+| `flag`            | `flag(vararg ItemFlag)`                          | Add one or more item flags                      |
+| `customModelData` | `customModelData(Int)`                           | Set the custom model data value                 |
+| `pdc`             | `pdc(NamespacedKey, PersistentDataType<P,C>, C)` | Store a PDC entry on the item (via PDCUtil)     |
+| `meta`            | `meta(ItemMeta.() -> Unit)`                      | Escape hatch for direct `ItemMeta` manipulation |
 
 ### Escape Hatch Example
 
