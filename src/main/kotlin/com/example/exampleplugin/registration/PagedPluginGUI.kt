@@ -2,6 +2,8 @@ package com.example.exampleplugin.registration
 
 import com.example.exampleplugin.enums.FillMode
 import com.example.exampleplugin.utils.itemStack
+import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -110,12 +112,18 @@ abstract class PagedPluginGUI(
 
         when (slot) {
             navRowStart + PREVIOUS_OFFSET -> {
-                if (page > 0) openPage(player, event.inventory, page - 1)
+                if (page > 0) {
+                    openPage(player, event.inventory, page - 1)
+                    player.playSound(Sound.sound(Key.key("minecraft:ui.button.click"), Sound.Source.UI, 1f, 1f))
+                }
             }
 
             navRowStart + NEXT_OFFSET -> {
                 val totalPages = totalPages(getItems(player).size)
-                if (page < totalPages - 1) openPage(player, event.inventory, page + 1)
+                if (page < totalPages - 1) {
+                    openPage(player, event.inventory, page + 1)
+                    player.playSound(Sound.sound(Key.key("minecraft:ui.button.click"), Sound.Source.UI, 1f, 1f))
+                }
             }
 
             else -> {
