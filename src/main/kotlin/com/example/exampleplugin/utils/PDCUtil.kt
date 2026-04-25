@@ -3,6 +3,7 @@ package com.example.exampleplugin.utils
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Entity
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 
@@ -76,7 +77,12 @@ object PDCUtil {
      * @param type   the [PersistentDataType] describing how the value is stored
      * @param value  the value to store
      */
-    fun <P : Any, C : Any> set(holder: PersistentDataHolder, key: NamespacedKey, type: PersistentDataType<P, C>, value: C) {
+    fun <P : Any, C : Any> set(
+        holder: PersistentDataHolder,
+        key: NamespacedKey,
+        type: PersistentDataType<P, C>,
+        value: C
+    ) {
         holder.persistentDataContainer.set(key, type, value)
     }
 
