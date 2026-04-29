@@ -595,11 +595,11 @@ val newValue: Boolean? = GameRuleUtil.toggle(world, GameRule.DO_DAYLIGHT_CYCLE)
 
 ### Methods
 
-| Method             | Signature                              | Return          | Description                                                                                              |
-|:-------------------|:---------------------------------------|:----------------|:---------------------------------------------------------------------------------------------------------|
-| `get`              | `get(world, rule: GameRule<T>)`        | `T?`            | Returns the current value of the rule, or `null` if not set                                             |
-| `set`              | `set(world, rule: GameRule<T>, value)` | `Boolean`       | Sets the rule to `value`; returns `false` if the rule is unrecognized                                   |
-| `toggle`           | `toggle(world, rule: GameRule<Boolean>)` | `Boolean?`    | Flips a boolean rule to its opposite value; returns the **new** value, or `null` if the current value could not be read |
+| Method   | Signature                                | Return     | Description                                                                                                             |
+|:---------|:-----------------------------------------|:-----------|:------------------------------------------------------------------------------------------------------------------------|
+| `get`    | `get(world, rule: GameRule<T>)`          | `T?`       | Returns the current value of the rule, or `null` if not set                                                             |
+| `set`    | `set(world, rule: GameRule<T>, value)`   | `Boolean`  | Sets the rule to `value`; returns `false` if the rule is unrecognized                                                   |
+| `toggle` | `toggle(world, rule: GameRule<Boolean>)` | `Boolean?` | Flips a boolean rule to its opposite value; returns the **new** value, or `null` if the current value could not be read |
 
 ### Example (Cycle Day and Weather)
 
