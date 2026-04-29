@@ -33,7 +33,9 @@ src/main/kotlin/com/example/exampleplugin/
 ├── data/                    # JSON-persisted player and server data (PlayerData, ServerData)
 ├── enums/                   # Plugin-wide enums (e.g. FillMode, DisplayLocation)
 ├── guis/                    # Auto-registered GUIs (extend PluginGUI)
+├── items/                   # Plugin-wide custom items (extend PluginItem)
 ├── listeners/               # Auto-registered listeners (implement Listener)
+├── recipes/                 # Auto-registered recipes (implement PluginRecipe)
 ├── registration/            # Auto-registration framework
 ├── tasks/                   # Auto-registered tasks (extend PluginTask)
 └── utils/                   # Utility helpers (e.g. ItemStack DSL)
