@@ -47,9 +47,11 @@ abstract class PluginItem(val id: String) {
         /**
          * The PDC key stamped onto every stack created by [create].
          * The value stored under this key is the item's [id].
+         *
+         * Namespace `exampleplugin`, key `custom_item_id`.
          */
         @JvmField
-        val ITEM_ID_KEY: NamespacedKey = NamespacedKey("exampleplugin", "custom_item_id")
+        val ITEM_ID_KEY: NamespacedKey = NamespacedKey.fromString("exampleplugin:custom_item_id")!!
     }
 
     /**

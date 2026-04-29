@@ -82,8 +82,9 @@ object ItemRegistrar {
         // Kotlin object singleton
         try {
             val field = clazz.getDeclaredField("INSTANCE")
-            field.isAccessible = true
-            return field.get(null) as PluginItem
+            if (field.trySetAccessible()) {
+                return field.get(null) as PluginItem
+            }
         } catch (_: NoSuchFieldException) {
         }
 
