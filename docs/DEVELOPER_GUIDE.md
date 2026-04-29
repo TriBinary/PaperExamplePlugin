@@ -391,29 +391,29 @@ For example, a 6-row GUI provides 45 content slots per page (rows 1–5).
 
 `PagedPluginGUI` inherits all properties from `PluginGUI` and adds one of its own:
 
-| Property   | Type           | Default              | Description                                                                        |
-|:-----------|:---------------|:---------------------|:-----------------------------------------------------------------------------------|
-| `id`       | `String`       | *(required)*         | Unique identifier used to open the GUI                                             |
-| `title`    | `Component`    | *(required)*         | Title displayed at the top of the chest                                            |
-| `rows`     | `Int`          | `6`                  | Number of rows (2–6, each row = 9 slots)                                           |
-| `fillMode` | `FillMode`     | `FillMode.NONE`      | Controls background filler; re-applied on every page render, not just initial open |
-| `mode`     | `PagedGUIMode` | `PagedGUIMode.LIST`  | Controls how items are supplied — see [Modes](#modes) below                        |
+| Property   | Type           | Default             | Description                                                                        |
+|:-----------|:---------------|:--------------------|:-----------------------------------------------------------------------------------|
+| `id`       | `String`       | *(required)*        | Unique identifier used to open the GUI                                             |
+| `title`    | `Component`    | *(required)*        | Title displayed at the top of the chest                                            |
+| `rows`     | `Int`          | `6`                 | Number of rows (2–6, each row = 9 slots)                                           |
+| `fillMode` | `FillMode`     | `FillMode.NONE`     | Controls background filler; re-applied on every page render, not just initial open |
+| `mode`     | `PagedGUIMode` | `PagedGUIMode.LIST` | Controls how items are supplied — see [Modes](#modes) below                        |
 
 ### Modes
 
 `PagedPluginGUI` supports two item-supply modes controlled by the `mode` constructor parameter:
 
-| Mode               | Override           | Description                                                                                         |
-|:-------------------|:-------------------|:----------------------------------------------------------------------------------------------------|
-| `PagedGUIMode.LIST` | `getItems`        | Items are provided as a flat list and distributed automatically across pages (one item per slot)    |
-| `PagedGUIMode.SET`  | `getSetItems`     | Items are placed manually by page and slot, giving full control over each item's exact position     |
+| Mode                | Override      | Description                                                                                      |
+|:--------------------|:--------------|:-------------------------------------------------------------------------------------------------|
+| `PagedGUIMode.LIST` | `getItems`    | Items are provided as a flat list and distributed automatically across pages (one item per slot) |
+| `PagedGUIMode.SET`  | `getSetItems` | Items are placed manually by page and slot, giving full control over each item's exact position  |
 
 ### Methods to Override
 
 | Method           | Mode   | Required | Description                                                      |
 |:-----------------|:-------|:---------|:-----------------------------------------------------------------|
 | `getItems`       | `LIST` | Yes      | Return the full list of items to paginate for a player           |
-| `getSetItems`    | `SET`  | Yes      | Return a map of `page → (slot → item)` for manual placement     |
+| `getSetItems`    | `SET`  | Yes      | Return a map of `page → (slot → item)` for manual placement      |
 | `onContentClick` | Both   | No       | Handle clicks on content slots (clicks are cancelled by default) |
 
 You do **not** need to override `setup`, `onClick`, or `onClose` — `PagedPluginGUI` handles them internally for
@@ -467,7 +467,8 @@ class RewardsGUI : PagedPluginGUI(
 ### Example (SET mode)
 
 Use `PagedGUIMode.SET` when you need precise control over which slot on which page each item appears in. The outer
-map key is the **zero-based page index**; the inner map key is the **zero-based content-slot index** (0–`contentSlots - 1`).
+map key is the **zero-based page index**; the inner map key is the **zero-based content-slot index** (0–
+`contentSlots - 1`).
 
 ```kotlin
 package com.example.exampleplugin.guis
@@ -1449,10 +1450,10 @@ Plugin-wide enums live in `com.example.exampleplugin.enums`.
 `PagedGUIMode` is used by `PagedPluginGUI` to control how items are supplied to the paged inventory. See the
 [Paged GUIs section](#paged-guis) for details.
 
-| Value  | Description                                                                          |
-|:-------|:-------------------------------------------------------------------------------------|
-| `LIST` | Items are provided as a flat list via `getItems` and distributed automatically       |
-| `SET`  | Items are placed manually by page and slot via `getSetItems`                         |
+| Value  | Description                                                                    |
+|:-------|:-------------------------------------------------------------------------------|
+| `LIST` | Items are provided as a flat list via `getItems` and distributed automatically |
+| `SET`  | Items are placed manually by page and slot via `getSetItems`                   |
 
 ---
 
