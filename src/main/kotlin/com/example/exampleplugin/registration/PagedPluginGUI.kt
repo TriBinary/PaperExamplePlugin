@@ -197,6 +197,7 @@ abstract class PagedPluginGUI(
             val itemCount = getItems(player).size
             if (itemCount == 0) 1 else (itemCount + contentSlots - 1) / contentSlots
         }
+
         PagedGUIMode.SET -> {
             val maxPage = getSetItems(player).keys.maxOrNull() ?: -1
             maxOf(maxPage + 1, 1)
@@ -226,6 +227,7 @@ abstract class PagedPluginGUI(
                     inventory.setItem(i - start, items[i])
                 }
             }
+
             PagedGUIMode.SET -> {
                 val pageItems = getSetItems(player)[page] ?: emptyMap()
                 for ((slot, item) in pageItems) {
