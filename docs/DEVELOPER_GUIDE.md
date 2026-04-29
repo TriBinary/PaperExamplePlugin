@@ -488,11 +488,11 @@ class StagesGUI : PagedPluginGUI(
     override fun getSetItems(player: Player): Map<Int, Map<Int, ItemStack>> {
         return mapOf(
             0 to mapOf(
-                4 to ItemStack(Material.DIAMOND)   // page 1, slot 4
+                4 to ItemStack(Material.DIAMOND)    // page 0 (first page), slot 4
             ),
             1 to mapOf(
-                4 to ItemStack(Material.EMERALD),  // page 2, slot 4
-                13 to ItemStack(Material.GOLD_INGOT) // page 2, slot 13
+                4 to ItemStack(Material.EMERALD),   // page 1 (second page), slot 4
+                13 to ItemStack(Material.GOLD_INGOT) // page 1 (second page), slot 13
             )
         )
     }

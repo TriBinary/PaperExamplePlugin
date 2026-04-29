@@ -199,7 +199,7 @@ abstract class PagedPluginGUI(
         }
         PagedGUIMode.SET -> {
             val maxPage = getSetItems(player).keys.maxOrNull() ?: -1
-            maxPage + 1
+            maxOf(maxPage + 1, 1)
         }
     }
 
