@@ -1,5 +1,6 @@
 package com.example.exampleplugin.utils
 
+import com.example.exampleplugin.utils.GameRuleUtil.toggle
 import org.bukkit.GameRule
 import org.bukkit.World
 
@@ -22,9 +23,6 @@ import org.bukkit.World
  *
  * // Toggle a boolean rule (no true/false needed)
  * GameRuleUtil.toggle(world, GameRule.DO_DAYLIGHT_CYCLE)
- *
- * // Get every rule as a map
- * val allRules = GameRuleUtil.getAll(world)
  * ```
  */
 object GameRuleUtil {
@@ -49,7 +47,7 @@ object GameRuleUtil {
      *         rule is not recognized by this world
      */
     fun <T : Any> set(world: World, rule: GameRule<T>, value: T): Boolean =
-        world.setGameRuleValue(rule, value)
+        world.setGameRule(rule, value)
 
     /**
      * Flips the current value of the boolean [rule] in [world] to its logical
@@ -62,21 +60,7 @@ object GameRuleUtil {
      */
     fun toggle(world: World, rule: GameRule<Boolean>): Boolean? {
         val newValue = !(world.getGameRuleValue(rule) ?: return null)
-        world.setGameRuleValue(rule, newValue)
+        world.setGameRule(rule, newValue)
         return newValue
     }
-
-    /**
-     * Returns a snapshot of every game rule in [world] mapped to its current
-     * value.
-     *
-     * The map values are typed as `Any?` because rules may be of different
-     * types (`Boolean` or `Int`). Use [get] with a specific [GameRule] constant
-     * when you need a typed result.
-     *
-     * @param world the world to read from
-     * @return immutable map of every game rule to its current value
-     */
-    fun getAll(world: World): Map<GameRule<*>, Any?> =
-        GameRule.values().associateWith { world.getGameRuleValue(it) }
 }

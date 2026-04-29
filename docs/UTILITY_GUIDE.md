@@ -591,9 +591,6 @@ GameRuleUtil.set(world, GameRule.RANDOM_TICK_SPEED, 3)
 
 // Toggle a boolean rule (no true/false needed)
 val newValue: Boolean? = GameRuleUtil.toggle(world, GameRule.DO_DAYLIGHT_CYCLE)
-
-// Get every rule as a map
-val allRules: Map<GameRule<*>, Any?> = GameRuleUtil.getAll(world)
 ```
 
 ### Methods
@@ -603,7 +600,6 @@ val allRules: Map<GameRule<*>, Any?> = GameRuleUtil.getAll(world)
 | `get`              | `get(world, rule: GameRule<T>)`        | `T?`            | Returns the current value of the rule, or `null` if not set                                             |
 | `set`              | `set(world, rule: GameRule<T>, value)` | `Boolean`       | Sets the rule to `value`; returns `false` if the rule is unrecognized                                   |
 | `toggle`           | `toggle(world, rule: GameRule<Boolean>)` | `Boolean?`    | Flips a boolean rule to its opposite value; returns the **new** value, or `null` if the current value could not be read |
-| `getAll`           | `getAll(world)`                        | `Map<GameRule<*>, Any?>` | Returns a snapshot of every game rule mapped to its current value                           |
 
 ### Example (Cycle Day and Weather)
 
@@ -634,18 +630,6 @@ import org.bukkit.GameRule
 fun onToggleKeepInventory(world: org.bukkit.World) {
     val newState = GameRuleUtil.toggle(world, GameRule.KEEP_INVENTORY)
     println("keep-inventory is now $newState")
-}
-```
-
-### Example (Read All Rules)
-
-```kotlin
-import com.example.exampleplugin.utils.GameRuleUtil
-
-fun printAllRules(world: org.bukkit.World) {
-    GameRuleUtil.getAll(world).forEach { (rule, value) ->
-        println("${rule.name} = $value")
-    }
 }
 ```
 
