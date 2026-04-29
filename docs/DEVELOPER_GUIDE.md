@@ -605,14 +605,14 @@ constructor is needed.
 
 ### PluginItem Properties and Methods
 
-| Member       | Signature                  | Description                                                                    |
-|:-------------|:---------------------------|:-------------------------------------------------------------------------------|
-| `id`         | `String` *(constructor)*   | Unique lower-case identifier stored in every produced stack's PDC              |
-| `ITEM_ID_KEY`| `NamespacedKey` *(static)* | The PDC key used to stamp the ID; namespace `exampleplugin`, key `custom_item_id` |
-| `create`     | `create(amount: Int = 1)`  | Returns a fully configured, ID-stamped `ItemStack`                             |
-| `buildItem`  | `buildItem(amount: Int)`   | **Override** — define material, name, lore, etc. using the `itemStack` DSL    |
-| `matches`    | `matches(ItemStack)`       | Returns `true` when the stack carries this item's ID in its PDC                |
-| `asChoice`   | `asChoice()`               | Returns a `RecipeChoice.ExactChoice` for use as a recipe ingredient            |
+| Member        | Signature                  | Description                                                                       |
+|:--------------|:---------------------------|:----------------------------------------------------------------------------------|
+| `id`          | `String` *(constructor)*   | Unique lower-case identifier stored in every produced stack's PDC                 |
+| `ITEM_ID_KEY` | `NamespacedKey` *(static)* | The PDC key used to stamp the ID; namespace `exampleplugin`, key `custom_item_id` |
+| `create`      | `create(amount: Int = 1)`  | Returns a fully configured, ID-stamped `ItemStack`                                |
+| `buildItem`   | `buildItem(amount: Int)`   | **Override** — define material, name, lore, etc. using the `itemStack` DSL        |
+| `matches`     | `matches(ItemStack)`       | Returns `true` when the stack carries this item's ID in its PDC                   |
+| `asChoice`    | `asChoice()`               | Returns a `RecipeChoice.ExactChoice` for use as a recipe ingredient               |
 
 ### Example (Kotlin Object)
 
@@ -715,26 +715,26 @@ stale recipes from persisting across reloads.
 
 ### Supported Containers
 
-| Container       | Recipe type              | Notes                                 |
-|:----------------|:-------------------------|:--------------------------------------|
-| Crafting table / player 2×2 | `ShapedRecipe`   | Fixed ingredient layout               |
-| Crafting table / player 2×2 | `ShapelessRecipe`| Ingredients in any order              |
-| Furnace         | `FurnaceRecipe`          | —                                     |
-| Blast furnace   | `BlastingRecipe`         | —                                     |
-| Smoker          | `SmokingRecipe`          | —                                     |
-| Campfire        | `CampfireRecipe`         | —                                     |
-| Stonecutter     | `StonecuttingRecipe`     | —                                     |
-| Smithing table  | `SmithingTransformRecipe`| Requires template, base, and addition |
+| Container                   | Recipe type               | Notes                                 |
+|:----------------------------|:--------------------------|:--------------------------------------|
+| Crafting table / player 2×2 | `ShapedRecipe`            | Fixed ingredient layout               |
+| Crafting table / player 2×2 | `ShapelessRecipe`         | Ingredients in any order              |
+| Furnace                     | `FurnaceRecipe`           | —                                     |
+| Blast furnace               | `BlastingRecipe`          | —                                     |
+| Smoker                      | `SmokingRecipe`           | —                                     |
+| Campfire                    | `CampfireRecipe`          | —                                     |
+| Stonecutter                 | `StonecuttingRecipe`      | —                                     |
+| Smithing table              | `SmithingTransformRecipe` | Requires template, base, and addition |
 
 ### PluginRecipe Properties and Methods
 
-| Member          | Signature                        | Description                                                                      |
-|:----------------|:---------------------------------|:---------------------------------------------------------------------------------|
+| Member          | Signature                        | Description                                                                        |
+|:----------------|:---------------------------------|:-----------------------------------------------------------------------------------|
 | `key`           | `String` *(constructor)*         | Unique name used to build the recipe's `NamespacedKey` via `namespacedKey(plugin)` |
-| `build`         | `build(plugin: JavaPlugin)`      | **Override** — build and return the Bukkit `Recipe` to register                  |
-| `namespacedKey` | `namespacedKey(plugin)`          | Helper — returns `NamespacedKey(plugin, key)` for the recipe constructor         |
-| `vanillaChoice` | `vanillaChoice(material)`        | Helper — returns a `RecipeChoice.MaterialChoice` for a vanilla `Material`        |
-| `customChoice`  | `customChoice(item: PluginItem)` | Helper — returns a `RecipeChoice.ExactChoice` that matches only stacks of `item` |
+| `build`         | `build(plugin: JavaPlugin)`      | **Override** — build and return the Bukkit `Recipe` to register                    |
+| `namespacedKey` | `namespacedKey(plugin)`          | Helper — returns `NamespacedKey(plugin, key)` for the recipe constructor           |
+| `vanillaChoice` | `vanillaChoice(material)`        | Helper — returns a `RecipeChoice.MaterialChoice` for a vanilla `Material`          |
+| `customChoice`  | `customChoice(item: PluginItem)` | Helper — returns a `RecipeChoice.ExactChoice` that matches only stacks of `item`   |
 
 ### Constructor Requirements
 
