@@ -1,5 +1,6 @@
 package com.example.exampleplugin.registration
 
+import com.example.exampleplugin.registration.PluginItem.Companion.ITEM_ID_KEY
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.RecipeChoice
