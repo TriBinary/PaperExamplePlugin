@@ -1,9 +1,10 @@
 # ExamplePlugin - Developer Guide
 
-This guide explains how to create **commands**, **listeners**, **GUIs**, **tasks**, and work with the **configuration**
-system using ExamplePlugin's registration system. Commands, listeners, GUIs, and tasks all follow the same pattern:
-extend a base class (or implement an interface), place the file in the correct package, and the plugin handles the rest
-automatically at startup. The configuration system provides typed access to `config.yml` values.
+This guide explains how to create **commands**, **listeners**, **GUIs**, **tasks**, **custom items**, **recipes**, and
+work with the **configuration** system using ExamplePlugin's registration system. Commands, listeners, GUIs, tasks,
+custom items, and recipes all follow the same pattern: extend a base class (or implement an interface), place the file
+in the correct package, and the plugin handles the rest automatically at startup. The configuration system provides
+typed access to `config.yml` values.
 
 ## How Auto-Registration Works
 
@@ -18,6 +19,8 @@ wire anything up.
 | Listeners     | `Listener`                | `com.example.exampleplugin.listeners` |
 | GUIs          | `PluginGUI`               | `com.example.exampleplugin.guis`      |
 | Tasks         | `PluginTask`              | `com.example.exampleplugin.tasks`     |
+| Custom Items  | `PluginItem`              | `com.example.exampleplugin.items`     |
+| Recipes       | `PluginRecipe`            | `com.example.exampleplugin.recipes`   |
 | Configuration | `PluginConfig`            | `com.example.exampleplugin.config`    |
 | Player Data   | `PlayerData`              | `com.example.exampleplugin.data`      |
 | Server Data   | `ServerData`              | `com.example.exampleplugin.data`      |
@@ -571,6 +574,277 @@ class MetricsTask(private val plugin: JavaPlugin) : PluginTask(
 ) {
     override fun run() {
         plugin.logger.info("Online players: ${plugin.server.onlinePlayers.size}")
+    }
+}
+```
+
+---
+
+## Custom Items
+
+To create a custom item, extend `PluginItem` and place the class anywhere inside the `items` package or a subpackage.
+The item is automatically discovered by `ItemRegistrar` at startup and added to an in-memory registry keyed by its ID.
+
+Each stack produced by `create()` has the item's `id` embedded in its
+[Persistent Data Container](https://docs.papermc.io/paper/dev/pdc) under the key
+`exampleplugin:custom_item_id`. This marker is used by `matches()` to identify the item in inventory checks, and by
+`asChoice()` to match the item as a recipe ingredient.
+
+### Declaring Items as Kotlin Objects
+
+The recommended pattern is to declare items as **Kotlin `object`s** (singletons). This lets you reference the item
+directly by name in recipe files and other code without going through the registry:
+
+```kotlin
+val stack = MyItem.create()    // one item
+val stack3 = MyItem.create(3)  // three items
+```
+
+`ItemRegistrar` detects Kotlin objects automatically via the compiler-generated `INSTANCE` field — no special
+constructor is needed.
+
+### PluginItem Properties and Methods
+
+| Member        | Signature                  | Description                                                                       |
+|:--------------|:---------------------------|:----------------------------------------------------------------------------------|
+| `id`          | `String` *(constructor)*   | Unique lower-case identifier stored in every produced stack's PDC                 |
+| `ITEM_ID_KEY` | `NamespacedKey` *(static)* | The PDC key used to stamp the ID; namespace `exampleplugin`, key `custom_item_id` |
+| `create`      | `create(amount: Int = 1)`  | Returns a fully configured, ID-stamped `ItemStack`                                |
+| `buildItem`   | `buildItem(amount: Int)`   | **Override** — define material, name, lore, etc. using the `itemStack` DSL        |
+| `matches`     | `matches(ItemStack)`       | Returns `true` when the stack carries this item's ID in its PDC                   |
+| `asChoice`    | `asChoice()`               | Returns a `RecipeChoice.ExactChoice` for use as a recipe ingredient               |
+
+### Example (Kotlin Object)
+
+```kotlin
+package com.example.exampleplugin.items
+
+import com.example.exampleplugin.registration.PluginItem
+import com.example.exampleplugin.utils.itemStack
+import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemStack
+
+object ExcaliburItem : PluginItem("excalibur") {
+
+    override fun buildItem(amount: Int): ItemStack = itemStack(Material.DIAMOND_SWORD) {
+        amount(amount)
+        name("<bold><gradient:gold:yellow>Excalibur</gradient></bold>")
+        lore(
+            "<gray>A legendary blade of myth,",
+            "<gray>Damage: <red>+20"
+        )
+        enchant(Enchantment.SHARPNESS, 5)
+        unbreakable(true)
+    }
+}
+```
+
+### Example (Regular Class with Plugin Instance)
+
+When you need access to the plugin (e.g. for a `NamespacedKey` beyond the built-in ID key), declare a `JavaPlugin`
+constructor parameter:
+
+```kotlin
+package com.example.exampleplugin.items
+
+import com.example.exampleplugin.registration.PluginItem
+import com.example.exampleplugin.utils.itemStack
+import org.bukkit.Material
+import org.bukkit.NamespacedKey
+import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
+import org.bukkit.plugin.java.JavaPlugin
+
+class TrackedItem(private val plugin: JavaPlugin) : PluginItem("tracked_item") {
+
+    override fun buildItem(amount: Int): ItemStack = itemStack(Material.COMPASS) {
+        amount(amount)
+        name("<aqua>Tracking Compass")
+        pdc(NamespacedKey(plugin, "tracker_version"), PersistentDataType.INTEGER, 1)
+    }
+}
+```
+
+### Checking for a Custom Item at Runtime
+
+Use `matches` in a listener to detect when a player is holding or using a specific custom item:
+
+```kotlin
+import com.example.exampleplugin.items.ExcaliburItem
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.entity.Player
+
+class ExcaliburListener : Listener {
+
+    @EventHandler
+    fun onHit(event: EntityDamageByEntityEvent) {
+        val attacker = event.damager as? Player ?: return
+        val held = attacker.inventory.itemInMainHand
+        if (ExcaliburItem.matches(held)) {
+            event.damage *= 2.0
+        }
+    }
+}
+```
+
+### Looking Up Items by ID
+
+When you only have the item ID as a string (e.g. from config), use `ItemRegistrar.get`:
+
+```kotlin
+import com.example.exampleplugin.registration.ItemRegistrar
+
+val item = ItemRegistrar.get("excalibur") ?: return
+player.inventory.addItem(item.create())
+```
+
+---
+
+## Recipes
+
+To create a recipe, extend `PluginRecipe` and place the class anywhere inside the `recipes` package or a subpackage.
+The recipe is automatically discovered by `RecipeRegistrar` at startup, built, and registered with the server. All
+Minecraft crafting containers are supported — the container type is determined by the
+[`Recipe`](https://jd.papermc.io/paper/1.21/) subtype returned by `build`.
+
+All registered recipes are removed cleanly when the plugin disables (via `RecipeRegistrar.unregisterAll`), preventing
+stale recipes from persisting across reloads.
+
+### Supported Containers
+
+| Container                   | Recipe type               | Notes                                 |
+|:----------------------------|:--------------------------|:--------------------------------------|
+| Crafting table / player 2×2 | `ShapedRecipe`            | Fixed ingredient layout               |
+| Crafting table / player 2×2 | `ShapelessRecipe`         | Ingredients in any order              |
+| Furnace                     | `FurnaceRecipe`           | —                                     |
+| Blast furnace               | `BlastingRecipe`          | —                                     |
+| Smoker                      | `SmokingRecipe`           | —                                     |
+| Campfire                    | `CampfireRecipe`          | —                                     |
+| Stonecutter                 | `StonecuttingRecipe`      | —                                     |
+| Smithing table              | `SmithingTransformRecipe` | Requires template, base, and addition |
+
+### PluginRecipe Properties and Methods
+
+| Member          | Signature                        | Description                                                                        |
+|:----------------|:---------------------------------|:-----------------------------------------------------------------------------------|
+| `key`           | `String` *(constructor)*         | Unique name used to build the recipe's `NamespacedKey` via `namespacedKey(plugin)` |
+| `build`         | `build(plugin: JavaPlugin)`      | **Override** — build and return the Bukkit `Recipe` to register                    |
+| `namespacedKey` | `namespacedKey(plugin)`          | Helper — returns `NamespacedKey(plugin, key)` for the recipe constructor           |
+| `vanillaChoice` | `vanillaChoice(material)`        | Helper — returns a `RecipeChoice.MaterialChoice` for a vanilla `Material`          |
+| `customChoice`  | `customChoice(item: PluginItem)` | Helper — returns a `RecipeChoice.ExactChoice` that matches only stacks of `item`   |
+
+### Constructor Requirements
+
+Recipe classes follow the same constructor rules as commands and tasks:
+
+| Constructor                          | When to Use                                   |
+|:-------------------------------------|:----------------------------------------------|
+| No-arg constructor                   | When you don't need a reference to the plugin |
+| Constructor accepting a `JavaPlugin` | When you need to access the plugin instance   |
+
+### Example (Shaped Crafting Recipe — Custom Item Result)
+
+```kotlin
+package com.example.exampleplugin.recipes
+
+import com.example.exampleplugin.items.ExcaliburItem
+import com.example.exampleplugin.registration.PluginRecipe
+import org.bukkit.Material
+import org.bukkit.inventory.Recipe
+import org.bukkit.inventory.ShapedRecipe
+import org.bukkit.plugin.java.JavaPlugin
+
+class ExcaliburRecipe : PluginRecipe("excalibur_recipe") {
+
+    override fun build(plugin: JavaPlugin): Recipe {
+        val recipe = ShapedRecipe(namespacedKey(plugin), ExcaliburItem.create())
+        recipe.shape(
+            "DDD",
+            "D D",
+            "DDD"
+        )
+        recipe.setIngredient('D', vanillaChoice(Material.DIAMOND))
+        return recipe
+    }
+}
+```
+
+### Example (Shapeless Crafting Recipe — Custom Item Ingredient)
+
+Use `customChoice(item)` to require a plugin custom item as an ingredient:
+
+```kotlin
+package com.example.exampleplugin.recipes
+
+import com.example.exampleplugin.items.ExcaliburItem
+import com.example.exampleplugin.registration.PluginRecipe
+import org.bukkit.Material
+import org.bukkit.inventory.Recipe
+import org.bukkit.inventory.ShapelessRecipe
+import org.bukkit.plugin.java.JavaPlugin
+
+class ExcaliburRepairRecipe : PluginRecipe("excalibur_repair") {
+
+    override fun build(plugin: JavaPlugin): Recipe {
+        val recipe = ShapelessRecipe(namespacedKey(plugin), ExcaliburItem.create())
+        recipe.addIngredient(customChoice(ExcaliburItem))
+        recipe.addIngredient(vanillaChoice(Material.DIAMOND))
+        return recipe
+    }
+}
+```
+
+### Example (Furnace Recipe)
+
+```kotlin
+package com.example.exampleplugin.recipes
+
+import com.example.exampleplugin.registration.PluginRecipe
+import org.bukkit.Material
+import org.bukkit.inventory.FurnaceRecipe
+import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.Recipe
+import org.bukkit.plugin.java.JavaPlugin
+
+class IronNuggetRecipe : PluginRecipe("iron_nugget_smelt") {
+
+    override fun build(plugin: JavaPlugin): Recipe {
+        return FurnaceRecipe(
+            namespacedKey(plugin),
+            ItemStack(Material.IRON_NUGGET),
+            vanillaChoice(Material.IRON_INGOT),
+            0.1f,  // experience
+            200    // cooking time (ticks)
+        )
+    }
+}
+```
+
+### Example (Smithing Table Recipe)
+
+```kotlin
+package com.example.exampleplugin.recipes
+
+import com.example.exampleplugin.items.ExcaliburItem
+import com.example.exampleplugin.registration.PluginRecipe
+import org.bukkit.Material
+import org.bukkit.inventory.Recipe
+import org.bukkit.inventory.SmithingTransformRecipe
+import org.bukkit.plugin.java.JavaPlugin
+
+class ExcaliburUpgradeRecipe : PluginRecipe("excalibur_upgrade") {
+
+    override fun build(plugin: JavaPlugin): Recipe {
+        return SmithingTransformRecipe(
+            namespacedKey(plugin),
+            ExcaliburItem.create(),
+            vanillaChoice(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE), // template
+            customChoice(ExcaliburItem),                                  // base
+            vanillaChoice(Material.NETHERITE_INGOT)                      // addition
+        )
     }
 }
 ```
